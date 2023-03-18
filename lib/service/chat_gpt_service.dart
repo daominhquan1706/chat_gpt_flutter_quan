@@ -2,11 +2,11 @@ import 'package:chat_gpt_flutter_quan/service/chat_gpt_response.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatGPTApi {
   static const String apiUrl = "https://api.openai.com/v1/chat/completions";
-  static const String token =
-      "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"; // Thêm API Token của bạn vào đây
+  static String token = dotenv.env['API_TOKEN_CHATGPT'];
 
   static Future<String> getResponse(String query) async {
     try {
@@ -14,7 +14,7 @@ class ChatGPTApi {
         Uri.parse(apiUrl),
         headers: {
           "Authorization": "Bearer $token",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json; charset=utf-8"
         },
         body: json.encode({
           "model": "gpt-3.5-turbo",
@@ -28,7 +28,10 @@ class ChatGPTApi {
       if (response.statusCode == 200) {
         final chatGPTResponse = processChatGPTResponse(response.body);
         Get.log(chatGPTResponse.text);
-        return chatGPTResponse.text;
+        String decodedString = chatGPTResponse.text;
+
+        String encodedString = utf8.decode(decodedString.runes.toList());
+        return encodedString;
       } else {
         throw Exception('Failed to load chatGPT response');
       }

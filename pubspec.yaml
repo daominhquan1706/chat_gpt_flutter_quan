@@ -17,6 +17,7 @@ dependencies:
   get: ^4.6.5
   flutter_chat_ui: ^1.6.6
   google_fonts: ^4.0.3
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +27,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - .env
