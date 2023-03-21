@@ -18,6 +18,21 @@ class ChatPage extends GetView<ChatPageController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xff1D1C21),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset('assets/images/logo.jpg'),
+          ).paddingAll(6),
+          title: const Text('Chatty GPT'),
+          actions: [
+            // clear history button
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: controller.handleClearHistoryPressed,
+            ),
+          ],
+        ),
         body: Column(
           children: [
             Expanded(child: _buildChat()),
@@ -54,7 +69,18 @@ class ChatPage extends GetView<ChatPageController> {
                 style: textStyle.copyWith(color: Colors.red),
               ).paddingSymmetric(horizontal: 16, vertical: 14);
             case ChatType.loading:
-              return const CircularProgressIndicator().paddingAll(16);
+              return Row(
+                children: [
+                  const CircularProgressIndicator().paddingAll(16),
+                  Expanded(child: const Text('Loading...').paddingAll(16)),
+                  ElevatedButton(
+                    onPressed: controller.handleCancelPressed,
+                    // change to red
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    child: const Text('Stop'),
+                  ).paddingAll(16),
+                ],
+              );
             case ChatType.welcome:
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

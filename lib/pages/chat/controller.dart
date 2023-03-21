@@ -27,22 +27,28 @@ class ChatPageController extends GetxController {
 
   AdModel bottomAd;
   int totalTokens = 0;
+  String idLoading;
 
   @override
   void onInit() {
-    messages.insert(
-        0,
-        types.CustomMessage(
-          author: chatGptUser,
-          createdAt: DateTime.now().millisecondsSinceEpoch,
-          id: StringUtils.randomString(10),
-          metadata: const {"type": ChatType.welcome},
-        ));
+    initMessage();
     if (!kIsWeb) {
       _loadBottomAd();
     }
 
     super.onInit();
+  }
+
+  void initMessage() {
+    messages.insert(
+      0,
+      types.CustomMessage(
+        author: chatGptUser,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: StringUtils.randomString(10),
+        metadata: const {"type": ChatType.welcome},
+      ),
+    );
   }
 
   void _loadBottomAd() {
@@ -56,20 +62,10 @@ class ChatPageController extends GetxController {
   }
 
   void _requestResponse(String input) async {
-    final imageId = StringUtils.randomString(10);
     try {
-      isLoading.value = true;
-
-      final imageMessage = types.CustomMessage(
-          author: chatGptUser,
-          createdAt: DateTime.now().millisecondsSinceEpoch,
-          id: imageId,
-          metadata: const {
-            'type': ChatType.loading,
-          });
-
-      messages.insert(0, imageMessage);
       calculateAddAdvertisement();
+      showChatLoading();
+
       var result = await ChatGPTApi.getResponse([
         ...contextMessages,
         {
@@ -77,6 +73,10 @@ class ChatPageController extends GetxController {
           "content": input,
         }
       ]);
+      stopChatLoading();
+      if (result == null) {
+        return; // is Ok
+      }
       contextMessages.add(
         {
           "role": "assistant",
@@ -89,10 +89,9 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "text": result,
+          "text": result.text,
         },
       );
-      messages.removeWhere((element) => element.id == imageId);
       messages.insert(0, textMessage);
     } catch (e) {
       final textMessage = types.CustomMessage(
@@ -105,13 +104,30 @@ class ChatPageController extends GetxController {
         },
       );
 
-      final index = messages.indexWhere((element) => element.id == imageId);
+      final index = messages.indexWhere((element) => element.id == idLoading);
       messages.removeAt(index);
       messages.insert(index, textMessage);
     } finally {
       isLoading.value = false;
-      messages.removeWhere((element) => element.id == imageId);
+      messages.removeWhere((element) => element.id == idLoading);
     }
+  }
+
+  void showChatLoading() {
+    idLoading = StringUtils.randomString(10);
+    final imageMessage = types.CustomMessage(
+        author: chatGptUser,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: idLoading,
+        metadata: const {
+          'type': ChatType.loading,
+        });
+
+    messages.insert(0, imageMessage);
+  }
+
+  void stopChatLoading() {
+    messages.removeWhere((element) => element.id == idLoading);
   }
 
   void handleSendPressed(types.PartialText message) {
@@ -150,5 +166,15 @@ class ChatPageController extends GetxController {
         ),
       );
     }
+  }
+
+  void handleClearHistoryPressed() {
+    messages.clear();
+    totalTokens = 0;
+    initMessage();
+  }
+
+  void handleCancelPressed() {
+    ChatGPTApi.stopRequest();
   }
 }

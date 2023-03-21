@@ -7,11 +7,11 @@ import 'dart:convert';
 class ChatGPTApi {
   static const String apiUrl = "https://api.openai.com/v1/chat/completions";
   static String get token => F.apiTokenChatGPT;
+  static http.Client client = http.Client();
 
   static Future<ChatGPTResponse> getResponse(List<Map<String, String>> messages) async {
     try {
-      // return 'haha';
-      var response = await http.post(
+      var response = await client.post(
         Uri.parse(apiUrl),
         headers: {
           "Authorization": "Bearer $token",
@@ -19,9 +19,7 @@ class ChatGPTApi {
         },
         body: json.encode({
           "model": "gpt-3.5-turbo",
-          // "messages": messages,
-          // if more than 5 get 5 last messages
-          "messages": messages.length > 5 ? messages.sublist(messages.length - 5) : messages,
+          "messages": messages.length > 3 ? messages.sublist(messages.length - 3) : messages,
           "max_tokens": 1000,
         }),
       );
@@ -33,8 +31,16 @@ class ChatGPTApi {
       } else {
         throw Exception('Failed to load chatGPT response');
       }
+    } on http.ClientException {
+      return null;
     } catch (e) {
-      rethrow;
+      Get.log(e.toString());
+      throw Exception('Failed to load chatGPT response');
     }
+  }
+
+  static stopRequest() {
+    client.close();
+    client = http.Client();
   }
 }
