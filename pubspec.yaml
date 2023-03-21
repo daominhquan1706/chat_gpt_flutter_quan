@@ -23,7 +23,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_flavorizr: ^2.1.4
   flutter_lints: ^2.0.0
 
 flutter:
@@ -31,3 +31,27 @@ flutter:
 
   assets:
     - .env
+
+# terminal: flutter pub run flutter_flavorizr
+flavorizr:
+  app:
+    android:
+      flavorDimensions: "app"
+    ios:
+
+  flavors:
+    prod:
+      app:
+        name: "Chatty GPT"
+
+      android:
+        applicationId: "com.quan.chatty"
+        icon: "assets/logo.jpg"
+        # firebase:
+        #   config: ".firebase/prod/google-services.json"
+
+      ios:
+        bundleId: "com.quan.chatty"
+        icon: "assets/logo.jpg"
+        # firebase:
+        #   config: ".firebase/prod/GoogleService-Info.plist"

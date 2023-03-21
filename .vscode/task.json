@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Apk Production",
+            "type": "flutter",
+            "command": "flutter",
+            "args": [
+                "build",
+                "apk",
+                "--flavor=prod",
+                "--target=lib/main_prod.dart",
+                "--release"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Appbundle Production",
+            "type": "flutter",
+            "command": "flutter",
+            "args": [
+                "build",
+                "appbundle",
+                "--flavor=prod",
+                "--target=lib/main_prod.dart",
+                "--release"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}

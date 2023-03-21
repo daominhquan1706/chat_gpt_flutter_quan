@@ -23,7 +23,6 @@ class ChatPageController extends GetxController {
 
   static int totalTokens = 0;
 
-
   @override
   void onInit() {
     messages.insert(
@@ -77,7 +76,7 @@ class ChatPageController extends GetxController {
         id: StringUtils.randomString(10),
         metadata: {
           "type": ChatType.errorMessage,
-          "text": kDebugMode ? e.toString() : 'Something went wrong',
+          "error": kDebugMode ? e.toString() : 'Something went wrong',
         },
       );
 
@@ -104,7 +103,4 @@ class ChatPageController extends GetxController {
     _requestResponse(message.text);
     scrollController.scrollToIndex(0);
   }
-
-  
-  
 }
