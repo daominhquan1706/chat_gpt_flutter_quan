@@ -13,9 +13,10 @@ class App extends StatelessWidget {
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.robotoTextTheme(),
       ),
-      home: ChatPage(),
+      home: const ChatPage(),
       initialRoute: Routes.CHAT,
       initialBinding: AppBindings(initRoute: Routes.CHAT),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

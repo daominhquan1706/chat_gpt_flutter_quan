@@ -1,9 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdModService {
+  static final isReady = false.obs;
+  static int totalTokens = 0;
+
   static String get bannerAdUnitId {
     if (GetPlatform.isAndroid) {
       return kDebugMode
@@ -16,6 +20,7 @@ class AdModService {
   static BannerAdListener bannerAdListener = BannerAdListener(
     onAdLoaded: (ad) {
       debugPrint('AdModService: $ad onAdLoaded.');
+      isReady.value = true;
     },
     onAdFailedToLoad: (ad, err) {
       debugPrint('AdModService: $ad onAdFailedToLoad.');
@@ -38,4 +43,6 @@ class AdModService {
       debugPrint('AdModService: $ad onAdWillDismissScreen.');
     },
   );
+
+  
 }

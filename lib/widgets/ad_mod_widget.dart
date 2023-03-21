@@ -36,12 +36,14 @@ class _AdModWigetState extends State<AdModWiget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_bannerAd != null) {
-      return SizedBox(
-        height: 52,
-        child: AdWidget(ad: _bannerAd),
-      );
-    }
-    return Container();
+    return Obx(() {
+      if (AdModService.isReady.value == true) {
+        return SizedBox(
+          height: 52,
+          child: AdWidget(ad: _bannerAd),
+        );
+      }
+      return const SizedBox.shrink();
+    });
   }
 }

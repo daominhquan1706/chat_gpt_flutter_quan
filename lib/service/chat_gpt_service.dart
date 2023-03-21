@@ -8,7 +8,7 @@ class ChatGPTApi {
   static const String apiUrl = "https://api.openai.com/v1/chat/completions";
   static String token = dotenv.env['API_TOKEN_CHATGPT'];
 
-  static Future<String> getResponse(String query) async {
+  static Future<String> getResponse(List<Map<String, String>> messages) async {
     try {
       var response = await http.post(
         Uri.parse(apiUrl),
@@ -18,16 +18,14 @@ class ChatGPTApi {
         },
         body: json.encode({
           "model": "gpt-3.5-turbo",
-          "messages": [
-            {"role": "user", "content": query}
-          ],
-          "temperature": 0.7
+          "messages": messages,
+          "max_tokens": 100,
         }),
       );
 
       if (response.statusCode == 200) {
         final chatGPTResponse = processChatGPTResponse(response.body);
-        Get.log(chatGPTResponse.text);
+        Get.log(response.body);
         String decodedString = chatGPTResponse.text;
 
         String encodedString = utf8.decode(decodedString.runes.toList());
