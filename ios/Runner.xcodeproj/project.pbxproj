@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		2DF6EE1AC77D58AC7B39ED4E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5CEC88E8EF7E727664E46334 /* GoogleService-Info.plist */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		45D68AFC97EFE32154DBD010 /* prodProfile.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1FE2C5BEB145D224D0EB362A /* prodProfile.xcconfig */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -40,6 +41,7 @@
 		1FE2C5BEB145D224D0EB362A /* prodProfile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = prodProfile.xcconfig; path = Flutter/prodProfile.xcconfig; sourceTree = "<group>"; };
 		34DD6343A3FA296A53763685 /* prodDebug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = prodDebug.xcconfig; path = Flutter/prodDebug.xcconfig; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		5CEC88E8EF7E727664E46334 /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Runner/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6DF5C053690C436CCFEFECAA /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				54720AC6A5BBF577DC68DCD7 /* Pods */,
 				2B4DE0E14FCAE0F5E5219D3A /* Frameworks */,
 				0BF5F7E1499CC3C51AD5A36A /* prodLaunchScreen.storyboard */,
+				5CEC88E8EF7E727664E46334 /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -208,6 +211,7 @@
 				45D68AFC97EFE32154DBD010 /* prodProfile.xcconfig in Resources */,
 				ECE3D1EECD7994F61D8F08B4 /* prodRelease.xcconfig in Resources */,
 				D68512EE9189CE27FF0377AD /* prodLaunchScreen.storyboard in Resources */,
+				2DF6EE1AC77D58AC7B39ED4E /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

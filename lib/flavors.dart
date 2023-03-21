@@ -16,4 +16,6 @@ class F {
     }
   }
 
+  static String apiTokenChatGPT;
+  static String bannerAdUnitBottomBanner;
 }

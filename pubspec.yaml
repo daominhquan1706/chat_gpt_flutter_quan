@@ -19,6 +19,8 @@ dependencies:
   google_fonts: ^4.0.3
   flutter_dotenv: ^5.0.2
   google_mobile_ads: ^2.3.0
+  firebase_remote_config: ^3.0.15
+  firebase_core: ^2.8.0
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +33,7 @@ flutter:
 
   assets:
     - .env
+    - assets/images/
 
 # terminal: flutter pub run flutter_flavorizr
 flavorizr:
@@ -46,12 +49,12 @@ flavorizr:
 
       android:
         applicationId: "com.quan.chatty"
-        icon: "assets/logo.jpg"
-        # firebase:
-        #   config: ".firebase/prod/google-services.json"
+        icon: "assets/images/logo.jpg"
+        firebase:
+          config: ".firebase/prod/google-services.json"
 
       ios:
         bundleId: "com.quan.chatty"
-        icon: "assets/logo.jpg"
+        icon: "assets/images/logo.jpg"
         # firebase:
         #   config: ".firebase/prod/GoogleService-Info.plist"

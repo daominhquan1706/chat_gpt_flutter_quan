@@ -1,12 +1,12 @@
+import 'package:chat_gpt_flutter_quan/flavors.dart';
 import 'package:chat_gpt_flutter_quan/service/chat_gpt_response.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatGPTApi {
   static const String apiUrl = "https://api.openai.com/v1/chat/completions";
-  static String get token => dotenv.env['API_TOKEN_CHATGPT'];
+  static String get token => F.apiTokenChatGPT;
 
   static Future<String> getResponse(List<Map<String, String>> messages) async {
     try {

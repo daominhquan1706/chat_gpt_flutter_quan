@@ -1,3 +1,4 @@
+import 'package:chat_gpt_flutter_quan/flavors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ class AdModService {
     if (GetPlatform.isAndroid) {
       return kDebugMode
           ? 'ca-app-pub-3940256099942544/6300978111'
-          : dotenv.env['BANNER_AD_UNIT_ID_BOTTOM_BANNER'];
+          : F.bannerAdUnitBottomBanner;
     }
     return null;
   }

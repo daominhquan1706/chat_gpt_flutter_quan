@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "207692103631",
+    "project_id": "chattygpt-b93c7",
+    "storage_bucket": "chattygpt-b93c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207692103631:android:f90c2257c99a3756155cba",
+        "android_client_info": {
+          "package_name": "com.quan.chatty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "207692103631-33vt222o5t66l5337oq9kbn003duc4d6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCythzPAII101IEzf6JbbIYpihdnu2ZqVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207692103631-33vt222o5t66l5337oq9kbn003duc4d6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "207692103631-e00is3k6snrtv2n9rfbgkhd5puahtms7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chatGptFlutterQuan"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
