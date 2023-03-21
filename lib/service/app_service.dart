@@ -1,12 +1,26 @@
 import 'package:chat_gpt_flutter_quan/flavors.dart';
+import 'package:chat_gpt_flutter_quan/routes/app_pages.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 
 class AppService extends GetxService {
   FirebaseRemoteConfig get remoteConfig => FirebaseRemoteConfig.instance;
 
-  Future<AppService> init() async {
-    return this;
+  @override
+  void onInit() {
+    final currentRoute = Get.currentRoute;
+
+    Future.delayed(const Duration(milliseconds: 100)).then((value) async {
+      await Get.offAllNamed(Routes.SPLASH).then((value) async {});
+      await fetchRemoteConfig();
+      if (currentRoute != Routes.SPLASH) {
+        Get.toNamed(currentRoute);
+      } else {
+        Get.offAllNamed(Routes.CHAT);
+      }
+    });
+
+    super.onInit();
   }
 
   Future<void> fetchRemoteConfig() async {

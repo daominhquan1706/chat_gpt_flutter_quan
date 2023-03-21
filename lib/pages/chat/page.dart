@@ -1,3 +1,4 @@
+import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/controller.dart';
 import 'package:chat_gpt_flutter_quan/widgets/ad_mod_widget.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,9 @@ class ChatPage extends GetView<ChatPageController> {
             Expanded(child: _buildChat()),
           ],
         ),
-        bottomNavigationBar: const AdModWiget(),
+        bottomNavigationBar: AdvertiseWidget(
+          ad: controller.bottomAd,
+        ),
       );
 
   Obx _buildChat() {
@@ -35,6 +38,16 @@ class ChatPage extends GetView<ChatPageController> {
         customMessageBuilder: (p0, {messageWidth}) {
           final ChatType type = p0.metadata['type'];
           switch (type) {
+            case ChatType.advertisement:
+              return Obx(() {
+                final AdModel advertisement = p0.metadata['advertisement'];
+                if (advertisement.isReady.value) {
+                  return AdvertiseWidget(
+                    ad: advertisement,
+                  );
+                }
+                return const SizedBox.shrink();
+              });
             case ChatType.errorMessage:
               return SelectableText(
                 p0.metadata['error'].toString(),
@@ -72,8 +85,7 @@ Please feel free to ask me anything. How can I assist you today?''',
           final isChatGPT = p0.author.id == controller.chatGptUser.id;
           return SelectableText(
             p0.metadata['text'].toString(),
-            style: textStyle.copyWith(
-                color: isChatGPT ? Colors.black : Colors.white),
+            style: textStyle.copyWith(color: isChatGPT ? Colors.black : Colors.white),
           ).paddingSymmetric(horizontal: 16, vertical: 14);
         },
       ),
@@ -86,8 +98,7 @@ Please feel free to ask me anything. How can I assist you today?''',
         controller.handleSendPressed(types.PartialText(text: text));
       },
       child: Container(
-        decoration: BoxDecoration(
-            color: Colors.blue, borderRadius: BorderRadius.circular(8.0)),
+        decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(8.0)),
         child: Text(
           text,
           style: textStyle.copyWith(color: Colors.white),

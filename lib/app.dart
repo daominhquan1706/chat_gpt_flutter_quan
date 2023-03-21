@@ -1,4 +1,5 @@
 import 'package:chat_gpt_flutter_quan/routes/app_pages.dart';
+import 'package:chat_gpt_flutter_quan/service/ad_mod_service.dart';
 import 'package:chat_gpt_flutter_quan/service/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,5 +26,6 @@ class AppBindings extends Bindings {
   @override
   void dependencies() {
     Get.put(AppService());
+    Get.put(AdModService());
   }
 }

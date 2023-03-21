@@ -3,13 +3,18 @@ import 'dart:convert';
 class ChatGPTResponse {
   final String text;
   final Map<String, dynamic> entities;
+  final int totalTokens;
 
-  ChatGPTResponse({this.text, this.entities});
+  ChatGPTResponse({this.text, this.entities, this.totalTokens});
 
   factory ChatGPTResponse.fromJson(Map<String, dynamic> json) {
+    final text = json['choices'][0]['message']['content'].toString().trim();
+    String encodedString = utf8.decode(text.runes.toList());
+
     return ChatGPTResponse(
-      text: json['choices'][0]['message']['content'].toString().trim(),
+      text: encodedString,
       entities: extractEntities(json),
+      totalTokens: json['usage']['total_tokens'] as int,
     );
   }
 

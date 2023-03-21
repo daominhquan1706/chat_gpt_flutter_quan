@@ -1,3 +1,17 @@
 {
-    "dart.flutterSdkPath": "/Users/masterbranch/Developer/hidoc-patient/.fvm/flutter_sdk"
-}
+    "dart.flutterSdkPath": ".fvm/flutter_sdk",
+    // Remove .fvm files from search
+    "search.exclude": {
+        "**/.fvm": true
+    },
+    // Remove from file watching
+    "files.watcherExclude": {
+        "**/.fvm": true
+    },
+    "dart.lineLength": 100,
+    "[dart]": {
+        "editor.rulers": [
+            100
+        ],
+    },
+} 
