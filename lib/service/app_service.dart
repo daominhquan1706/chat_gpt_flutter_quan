@@ -10,7 +10,7 @@ class AppService extends GetxService {
   void onInit() {
     final currentRoute = Get.currentRoute;
 
-    Future.delayed(const Duration(milliseconds: 100)).then((value) async {
+    Future.delayed(const Duration(milliseconds: 0)).then((value) async {
       await Get.offAllNamed(Routes.SPLASH).then((value) async {});
       await fetchRemoteConfig();
       if (currentRoute != Routes.SPLASH) {
@@ -30,7 +30,6 @@ class AppService extends GetxService {
     ));
     await remoteConfig.fetchAndActivate();
     F.apiTokenChatGPT = remoteConfig.getString('API_TOKEN_CHATGPT');
-    F.bannerAdUnitBottomBanner =
-        remoteConfig.getString('BANNER_AD_UNIT_ID_BOTTOM_BANNER');
+    F.bannerAdUnitBottomBanner = remoteConfig.getString('BANNER_AD_UNIT_ID_BOTTOM_BANNER');
   }
 }

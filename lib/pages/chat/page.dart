@@ -1,6 +1,7 @@
 import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/controller.dart';
 import 'package:chat_gpt_flutter_quan/widgets/ad_mod_widget.dart';
+import 'package:chat_gpt_flutter_quan/widgets/chat_gpt_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
@@ -109,6 +110,9 @@ Please feel free to ask me anything. How can I assist you today?''',
               break;
           }
           final isChatGPT = p0.author.id == controller.chatGptUser.id;
+          if (isChatGPT) {
+            return ChatGptContainerWidget(p0);
+          }
           return SelectableText(
             p0.metadata['text'].toString(),
             style: textStyle.copyWith(color: isChatGPT ? Colors.black : Colors.white),

@@ -39,6 +39,13 @@ class ChatPageController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    scrollController?.dispose();
+    scrollController = AutoScrollController();
+    super.onClose();
+  }
+
   void initMessage() {
     messages.insert(
       0,
@@ -66,7 +73,7 @@ class ChatPageController extends GetxController {
       calculateAddAdvertisement();
       showChatLoading();
 
-      var result = await ChatGPTApi.getResponse([
+      var result = await ChatGPTApi.makeRequest([
         ...contextMessages,
         {
           "role": "user",
@@ -77,19 +84,19 @@ class ChatPageController extends GetxController {
       if (result == null) {
         return; // is Ok
       }
-      contextMessages.add(
-        {
-          "role": "assistant",
-          "content": result.text,
-        },
-      );
-      totalTokens += result.totalTokens;
+      // contextMessages.add(
+      //   {
+      //     "role": "assistant",
+      //     "content": result.text,
+      //   },
+      // );
+
       final textMessage = types.CustomMessage(
         author: chatGptUser,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "text": result.text,
+          "stream": result,
         },
       );
       messages.insert(0, textMessage);

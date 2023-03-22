@@ -12,6 +12,9 @@ class AdvertiseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (_adModService.bottomAd == null) {
+      return const SizedBox.shrink();
+    }
     return Obx(() {
       if (_adModService.bottomAd?.isReady?.value == true) {
         return SizedBox(

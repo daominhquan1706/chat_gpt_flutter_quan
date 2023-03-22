@@ -8,13 +8,15 @@ class ChatGPTResponse {
   ChatGPTResponse({this.text, this.entities, this.totalTokens});
 
   factory ChatGPTResponse.fromJson(Map<String, dynamic> json) {
-    final text = json['choices'][0]['message']['content'].toString().trim();
-    String encodedString = utf8.decode(text.runes.toList());
+    String text;
+    if ((json['choices'][0]['delta'] as Map<String, dynamic>).containsKey('content')) {
+      text = json['choices'][0]['delta']['content'].toString();
+    }
 
     return ChatGPTResponse(
-      text: encodedString,
+      text: text,
       entities: extractEntities(json),
-      totalTokens: json['usage']['total_tokens'] as int,
+      // totalTokens: json['usage']['total_tokens'] as int,
     );
   }
 
