@@ -1,6 +1,6 @@
 import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/service/ad_mod_service.dart';
-import 'package:chat_gpt_flutter_quan/service/chat_gpt_service.dart';
+import 'package:chat_gpt_flutter_quan/repositories/chat_gpt_repository.dart';
 import 'package:chat_gpt_flutter_quan/utils/string_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -22,7 +22,8 @@ class ChatPageController extends GetxController {
   final user = const types.User(id: 'user');
   final chatGptUser = const types.User(id: 'chatGptUser');
   ChatPageController();
-  AutoScrollController scrollController = AutoScrollController();
+  AutoScrollController get scrollController =>
+      Get.put<AutoScrollController>(AutoScrollController());
   List<Map<String, String>> contextMessages = [];
 
   AdModel bottomAd;
@@ -37,13 +38,6 @@ class ChatPageController extends GetxController {
     }
 
     super.onInit();
-  }
-
-  @override
-  void onClose() {
-    scrollController?.dispose();
-    scrollController = AutoScrollController();
-    super.onClose();
   }
 
   void initMessage() {
@@ -73,7 +67,7 @@ class ChatPageController extends GetxController {
       calculateAddAdvertisement();
       showChatLoading();
 
-      var result = await ChatGPTApi.makeRequest([
+      var result = await ChatGPTRepository.makeRequest([
         ...contextMessages,
         {
           "role": "user",
@@ -182,6 +176,6 @@ class ChatPageController extends GetxController {
   }
 
   void handleCancelPressed() {
-    ChatGPTApi.stopRequest();
+    ChatGPTRepository.stopRequest();
   }
 }

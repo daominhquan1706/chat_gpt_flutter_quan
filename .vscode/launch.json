@@ -7,10 +7,12 @@
             "request": "launch",
             "program": "lib/main_prod.dart",
             "args": [
+                "--web-renderer",
+                "canvaskit",
                 "--web-port",
                 "5129",
                 "--flavor",
-                "prod"
+                "prod",
             ],
         }
     ]

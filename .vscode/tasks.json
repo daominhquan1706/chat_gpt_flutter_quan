@@ -2,6 +2,22 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build Web Production",
+            "type": "flutter",
+            "command": "flutter",
+            "args": [
+                "build",
+                "web",
+                "--flavor=prod",
+                "--target=lib/main_prod.dart",
+                "--release",
+                "--web-renderer",
+                "canvaskit",
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "Build Apk Production",
             "type": "flutter",
             "command": "flutter",
@@ -10,7 +26,7 @@
                 "apk",
                 "--flavor=prod",
                 "--target=lib/main_prod.dart",
-                "--release"
+                "--release",
             ],
             "group": "build",
             "problemMatcher": []
@@ -28,6 +44,6 @@
             ],
             "group": "build",
             "problemMatcher": []
-        }
+        },
     ]
 }
