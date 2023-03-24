@@ -2,7 +2,9 @@ import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/controller.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/widgets/chat_type_welcome_widget.dart';
 import 'package:chat_gpt_flutter_quan/utils/constants.dart';
+import 'package:chat_gpt_flutter_quan/utils/functions.dart';
 import 'package:chat_gpt_flutter_quan/widgets/ad_mod_widget.dart';
+import 'package:chat_gpt_flutter_quan/widgets/bubble_chat_tool.dart';
 import 'package:chat_gpt_flutter_quan/widgets/chat_gpt_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -38,9 +40,9 @@ class ChatPage extends GetView<ChatPageController> {
             Expanded(child: _buildChat()),
           ],
         ),
-        bottomNavigationBar: AdvertiseWidget(
-          ad: controller.bottomAd,
-        ),
+        // bottomNavigationBar: AdvertiseWidget(
+        //   ad: controller.bottomAd,
+        // ),
       );
 
   Obx _buildChat() {
@@ -74,11 +76,14 @@ class ChatPage extends GetView<ChatPageController> {
               ).paddingSymmetric(horizontal: 16, vertical: 14);
             case ChatType.loading:
               return Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const CircularProgressIndicator().paddingAll(16),
-                  Expanded(child: const Text('Loading...').paddingAll(16)),
+                  const Text('Loading...').paddingAll(16),
                   ElevatedButton(
-                    onPressed: controller.handleCancelPressed,
+                    onPressed: () {
+                      controller.handleCancelPressed(p0.id);
+                    },
                     // change to red
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     child: const Text('Stop'),
@@ -110,7 +115,7 @@ class ChatPage extends GetView<ChatPageController> {
 
   Widget _bubbleBuilder(
     Widget child, {
-    @required message,
+    @required types.Message message,
     @required bool nextMessageInGroup,
   }) {
     final isAuthor = message.author.id == controller.user.id;
@@ -137,25 +142,33 @@ class ChatPage extends GetView<ChatPageController> {
         child: child,
       );
     }
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColor.chatGptBackgroundColor,
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(8),
-          topRight: const Radius.circular(8),
-          bottomRight: const Radius.circular(8),
-          bottomLeft: nextMessageInGroup ? const Radius.circular(8) : const Radius.circular(0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: const Offset(0, 1), // changes position of shadow
+    return BubbleChatToolWidget(
+      onCopyPressed: () {
+        if (Get.isRegistered<ChatGptContainerWidgetController>(tag: message.id)) {
+          final text = Get.find<ChatGptContainerWidgetController>(tag: message.id).message.value;
+          AppFunctions.copyTextToClipboard(text);
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColor.chatGptBackgroundColor,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(16),
+            topRight: const Radius.circular(16),
+            bottomRight: const Radius.circular(16),
+            bottomLeft: nextMessageInGroup ? const Radius.circular(16) : const Radius.circular(8),
           ),
-        ],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 1,
+              offset: const Offset(0, 1), // changes position of shadow
+            ),
+          ],
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

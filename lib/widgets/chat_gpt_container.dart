@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_gpt_flutter_quan/widgets/bubble_chat_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,14 +27,16 @@ class ChatGptContainerWidget extends GetWidget<ChatGptContainerWidgetController>
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => buildMarkdown().paddingSymmetric(horizontal: 16, vertical: 14),
+    // () => SelectableText(
+    //   controller.message.value,
+    //   style: textStyle,
+    // ).paddingSymmetric(horizontal: 16, vertical: 14),
+    () => buildMarkdown(controller.message.value).paddingSymmetric(horizontal: 16, vertical: 14),
     );
   }
 
-  Widget buildMarkdown() => Column(
-          children: MarkdownGenerator(
-        config: MarkdownConfig(configs: []),
-      ).buildWidgets('${controller.message.value}${controller.isDone.value ? '' : '█ '}'));
+  Widget buildMarkdown(String data) => Column(children: MarkdownGenerator().buildWidgets(data));
+
 }
 
 class ChatGptContainerWidgetController extends GetxController {

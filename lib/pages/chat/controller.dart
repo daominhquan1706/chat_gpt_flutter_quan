@@ -2,6 +2,7 @@ import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/service/ad_mod_service.dart';
 import 'package:chat_gpt_flutter_quan/repositories/chat_gpt_repository.dart';
 import 'package:chat_gpt_flutter_quan/utils/string_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -28,7 +29,7 @@ class ChatPageController extends GetxController {
 
   AdModel bottomAd;
   int totalTokens = 0;
-  String idLoading;
+  // String idLoading;
 
   @override
   void onInit() {
@@ -62,28 +63,27 @@ class ChatPageController extends GetxController {
     )..generateAd();
   }
 
-  void _requestResponse(String input) async {
+  void _chat(String input) async {
+    final idLoading = StringUtils.randomString(10);
     try {
       calculateAddAdvertisement();
-      showChatLoading();
+      showChatLoading(idLoading);
 
-      var result = await ChatGPTRepository.makeRequest([
-        ...contextMessages,
-        {
-          "role": "user",
-          "content": input,
-        }
-      ]);
-      stopChatLoading();
+      var result = await ChatGPTRepository.makeRequest(
+        [
+          ...contextMessages,
+          {
+            "role": "user",
+            "content": input,
+          },
+        ],
+        idLoading: idLoading,
+      );
+      final indexLoading = messages.indexWhere((element) => element.id == idLoading);
+      messages.removeAt(indexLoading);
       if (result == null) {
         return; // is Ok
       }
-      // contextMessages.add(
-      //   {
-      //     "role": "assistant",
-      //     "content": result.text,
-      //   },
-      // );
 
       final textMessage = types.CustomMessage(
         author: chatGptUser,
@@ -93,7 +93,11 @@ class ChatPageController extends GetxController {
           "stream": result,
         },
       );
-      messages.insert(0, textMessage);
+      messages.insert(indexLoading, textMessage);
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.cancel) {
+        print("Request was canceled");
+      }
     } catch (e) {
       final textMessage = types.CustomMessage(
         author: chatGptUser,
@@ -114,8 +118,7 @@ class ChatPageController extends GetxController {
     }
   }
 
-  void showChatLoading() {
-    idLoading = StringUtils.randomString(10);
+  void showChatLoading(String idLoading) {
     final imageMessage = types.CustomMessage(
         author: chatGptUser,
         createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -125,10 +128,6 @@ class ChatPageController extends GetxController {
         });
 
     messages.insert(0, imageMessage);
-  }
-
-  void stopChatLoading() {
-    messages.removeWhere((element) => element.id == idLoading);
   }
 
   void handleSendPressed(types.PartialText message) {
@@ -142,7 +141,7 @@ class ChatPageController extends GetxController {
 
     messages.insert(0, textMessage);
 
-    _requestResponse(message.text);
+    _chat(message.text);
     scrollController.scrollToIndex(0);
   }
 
@@ -175,7 +174,38 @@ class ChatPageController extends GetxController {
     initMessage();
   }
 
-  void handleCancelPressed() {
-    ChatGPTRepository.stopRequest();
+// Function to handle when the cancel button is pressed
+  void handleCancelPressed(String id) {
+    // Cancel the request with the given id
+    Get.find<CancelToken>(tag: id).cancel();
+
+    // Delete the CancelToken object with the given id
+    Get.delete<CancelToken>(tag: id);
+    messages.value = replaceLoadingMessage(
+      id,
+      messages,
+      types.CustomMessage(
+        author: chatGptUser,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: StringUtils.randomString(10),
+        metadata: const {
+          "type": ChatType.errorMessage,
+          "error": 'Request was canceled',
+        },
+      ),
+    );
+  }
+
+  static List<types.Message> replaceLoadingMessage(
+      String idLoading, List<types.Message> messages, types.CustomMessage message) {
+    // Find the index of the message with the given id
+    final indexLoading = messages.indexWhere((element) => element.id == idLoading);
+
+    // Remove the message from the list
+    messages.removeAt(indexLoading);
+
+    // Insert the new message into the list at the same index as the removed one
+    messages.insert(indexLoading, message);
+    return messages;
   }
 }

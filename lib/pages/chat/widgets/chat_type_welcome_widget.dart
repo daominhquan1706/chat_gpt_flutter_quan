@@ -10,9 +10,7 @@ class ChatTypeWelComeWidget extends StatelessWidget {
   final Function(String) onTapOption;
 
   final listOptions = [
-    'Tell me a Chuck Norris joke',
     'Write me an email to apply for a job',
-    'Write an essay about climate change',
     'Explain AI in three sentences',
     'Tell me a joke',
   ];
@@ -23,13 +21,12 @@ class ChatTypeWelComeWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SelectableText(
-          '''Sure, I'll be happy to assist you. As an AI chatbot powered by OpenAI, my primary objective is to help and answer all your queries related to coding in Flutter using the getX library without null-safety. Here are 5 recommended topics for us to discuss:
-''',
+          '''I'll be happy to assist you. As an AI chatbot powered by OpenAI, here what I can do:''',
           style: AppConstant.textStyle.copyWith(color: Colors.black),
         ),
         ...listOptions.map((e) => _buildChatOptiton(e)).toList(),
         SelectableText(
-          '''
+          ''' 
 Please feel free to ask me anything. How can I assist you today?''',
           style: textStyle.copyWith(color: Colors.black),
         ),
