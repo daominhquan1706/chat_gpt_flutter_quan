@@ -14,7 +14,7 @@ class AdModService extends GetxService {
 
   static String get bannerAdUnitId {
     if (!kIsWeb) {
-      return kDebugMode ? 'ca-app-pub-3940256099942544/6300978111' : F.bannerAdUnitBottomBanner;
+      return F.bannerAdUnitBottomBanner;
     }
     return null;
   }
@@ -25,6 +25,12 @@ class AdModService extends GetxService {
     if (!kIsWeb) {
       _loadBottomAd();
     }
+  }
+
+  @override
+  void onClose() {
+    dispose();
+    super.onClose();
   }
 
   void _loadBottomAd() {

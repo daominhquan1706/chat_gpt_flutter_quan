@@ -1,6 +1,9 @@
 import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/service/ad_mod_service.dart';
 import 'package:chat_gpt_flutter_quan/repositories/chat_gpt_repository.dart';
+import 'package:chat_gpt_flutter_quan/service/app_controller.dart';
+import 'package:chat_gpt_flutter_quan/service/message_chat_service.dart';
+import 'package:chat_gpt_flutter_quan/service/room_chat_service.dart';
 import 'package:chat_gpt_flutter_quan/utils/string_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -20,12 +23,17 @@ enum ChatType {
 class ChatPageController extends GetxController {
   final isLoading = false.obs;
   final RxList<types.Message> messages = RxList<types.Message>([]);
-  final user = const types.User(id: 'user');
-  final chatGptUser = const types.User(id: 'chatGptUser');
+
   ChatPageController();
   AutoScrollController get scrollController =>
       Get.put<AutoScrollController>(AutoScrollController());
   List<Map<String, String>> contextMessages = [];
+
+  types.User get chatGptUser => Get.find<AppController>().chatGptUser;
+  types.User get user => Get.find<AppController>().user;
+
+  String get roomId => Get.parameters['id'];
+  types.Room room;
 
   AdModel bottomAd;
   int totalTokens = 0;
@@ -34,6 +42,9 @@ class ChatPageController extends GetxController {
   @override
   void onInit() {
     initMessage();
+    RoomChatService.getRoom(roomId).then((value) {
+      room = value;
+    });
     if (!kIsWeb) {
       _loadBottomAd();
     }
@@ -41,7 +52,7 @@ class ChatPageController extends GetxController {
     super.onInit();
   }
 
-  void initMessage() {
+  Future<void> initMessage() async {
     messages.insert(
       0,
       types.CustomMessage(
@@ -50,6 +61,12 @@ class ChatPageController extends GetxController {
         id: StringUtils.randomString(10),
         metadata: const {"type": ChatType.welcome},
       ),
+    );
+
+    messages.insertAll(
+      0,
+      (await MessageChatService.getMessages(roomId))
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
     );
   }
 
@@ -91,6 +108,7 @@ class ChatPageController extends GetxController {
         id: StringUtils.randomString(10),
         metadata: {
           "stream": result,
+          "roomId": roomId,
         },
       );
       messages.insert(indexLoading, textMessage);
@@ -140,13 +158,14 @@ class ChatPageController extends GetxController {
         });
 
     messages.insert(0, textMessage);
+    MessageChatService.createMessage(roomId, textMessage);
 
     _chat(message.text);
     scrollController.scrollToIndex(0);
   }
 
   void calculateAddAdvertisement() {
-    if (messages.length % 9 == 0) {
+    if (messages.length % 3 == 0) {
       Get.log("Add advertisement");
       messages.insert(
         0,
@@ -169,9 +188,20 @@ class ChatPageController extends GetxController {
   }
 
   void handleClearHistoryPressed() {
-    messages.clear();
-    totalTokens = 0;
-    initMessage();
+    // show dialog confirm
+    Get.defaultDialog(
+      title: 'Clear history',
+      middleText: 'Are you sure you want to clear the history?',
+      textConfirm: 'Yes',
+      textCancel: 'No',
+      onConfirm: () {
+        Get.back();
+        MessageChatService.deleteAllMessages(roomId);
+        messages.clear();
+        totalTokens = 0;
+        initMessage();
+      },
+    );
   }
 
 // Function to handle when the cancel button is pressed

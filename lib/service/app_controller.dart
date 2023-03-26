@@ -2,9 +2,12 @@ import 'package:chat_gpt_flutter_quan/flavors.dart';
 import 'package:chat_gpt_flutter_quan/routes/app_pages.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-class AppService extends GetxService {
+class AppController extends GetxService {
   FirebaseRemoteConfig get remoteConfig => FirebaseRemoteConfig.instance;
+  final user = const types.User(id: 'user');
+  final chatGptUser = const types.User(id: 'chatGptUser');
 
   @override
   void onInit() {

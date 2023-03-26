@@ -1,5 +1,7 @@
 import 'package:chat_gpt_flutter_quan/pages/chat/controller.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/page.dart';
+import 'package:chat_gpt_flutter_quan/pages/room/controller.dart';
+import 'package:chat_gpt_flutter_quan/pages/room/page.dart';
 import 'package:chat_gpt_flutter_quan/pages/splash/controller.dart';
 import 'package:chat_gpt_flutter_quan/pages/splash/page.dart';
 import 'package:get/get.dart';
@@ -22,8 +24,15 @@ abstract class AppPages {
       transition: Transition.fadeIn,
       page: () => const ChatPage(),
       bindings: [
-        BindingsBuilder(
-            () => Get.put<ChatPageController>(ChatPageController())),
+        BindingsBuilder(() => Get.put<ChatPageController>(ChatPageController())),
+      ],
+    ),
+    GetPage(
+      name: Routes.ROOM,
+      transition: Transition.fadeIn,
+      page: () => const RoomPage(),
+      bindings: [
+        BindingsBuilder(() => Get.put<RoomPageController>(RoomPageController())),
       ],
     ),
   ];

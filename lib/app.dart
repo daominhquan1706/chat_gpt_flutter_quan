@@ -1,6 +1,6 @@
 import 'package:chat_gpt_flutter_quan/routes/app_pages.dart';
 import 'package:chat_gpt_flutter_quan/service/ad_mod_service.dart';
-import 'package:chat_gpt_flutter_quan/service/app_service.dart';
+import 'package:chat_gpt_flutter_quan/service/app_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,8 +12,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Chatty GPT',
-      theme: ThemeData(
-          primarySwatch: Colors.blue, textTheme: GoogleFonts.robotoTextTheme()),
+      theme: ThemeData(primarySwatch: Colors.blue, textTheme: GoogleFonts.robotoTextTheme()),
       getPages: AppPages.pages,
       initialRoute: Routes.SPLASH,
       initialBinding: AppBindings(),
@@ -25,7 +24,7 @@ class App extends StatelessWidget {
 class AppBindings extends Bindings {
   @override
   void dependencies() {
-    Get.put(AppService());
+    Get.put(AppController());
     Get.put(AdModService());
   }
 }

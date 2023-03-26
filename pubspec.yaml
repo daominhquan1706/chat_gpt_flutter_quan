@@ -28,6 +28,9 @@ dependencies:
   markdown_widget: ^2.0.0+1
   dio: ^5.0.3
   flutter_client_sse: ^1.0.0
+  get_storage: ^2.1.1
+  flutter_easyloading: ^3.0.5
+  intl: ^0.17.0
   
 
 dev_dependencies:

@@ -1,5 +1,6 @@
 import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/controller.dart';
+import 'package:chat_gpt_flutter_quan/pages/chat/widgets/chat_bubble_widget.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/widgets/chat_type_welcome_widget.dart';
 import 'package:chat_gpt_flutter_quan/utils/constants.dart';
 import 'package:chat_gpt_flutter_quan/utils/functions.dart';
@@ -16,17 +17,39 @@ class ChatPage extends GetView<ChatPageController> {
   TextStyle get textStyle => AppConstant.textStyle;
 
   @override
-  ChatPageController get controller => Get.put(ChatPageController());
+  ChatPageController get controller => Get.put(ChatPageController(), tag: Get.parameters['roomId']);
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xff1D1C21),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.asset('assets/images/logo.jpg'),
-          ).paddingAll(6),
-          title: const Text('Chatty GPT'),
+          // leading: ClipRRect(
+          //   borderRadius: BorderRadius.circular(8),
+          //   child: Image.asset('assets/images/logo.jpg'),
+          // ).paddingAll(6),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Chatty GPT',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Online',
+                    style: textStyle.copyWith(
+                      color: Colors.green,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
           actions: [
             // clear history button
             IconButton(
@@ -104,7 +127,7 @@ class ChatPage extends GetView<ChatPageController> {
           if (isChatGPT) {
             return ChatGptContainerWidget(p0);
           }
-          return SelectableText(
+          return Text(
             p0.metadata['text'].toString(),
             style: textStyle.copyWith(color: isChatGPT ? Colors.black : Colors.white),
           ).paddingSymmetric(horizontal: 16, vertical: 14);
@@ -118,30 +141,6 @@ class ChatPage extends GetView<ChatPageController> {
     @required types.Message message,
     @required bool nextMessageInGroup,
   }) {
-    final isAuthor = message.author.id == controller.user.id;
-
-    if (isAuthor) {
-      return Container(
-        decoration: BoxDecoration(
-          color: AppColor.userChatBackground,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(8),
-            topRight: const Radius.circular(8),
-            bottomLeft: const Radius.circular(8),
-            bottomRight: nextMessageInGroup ? const Radius.circular(8) : const Radius.circular(0),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 1), // changes position of shadow
-            ),
-          ],
-        ),
-        child: child,
-      );
-    }
     return BubbleChatToolWidget(
       onCopyPressed: () {
         if (Get.isRegistered<ChatGptContainerWidgetController>(tag: message.id)) {
@@ -149,24 +148,9 @@ class ChatPage extends GetView<ChatPageController> {
           AppFunctions.copyTextToClipboard(text);
         }
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColor.chatGptBackgroundColor,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(16),
-            topRight: const Radius.circular(16),
-            bottomRight: const Radius.circular(16),
-            bottomLeft: nextMessageInGroup ? const Radius.circular(16) : const Radius.circular(8),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 1,
-              offset: const Offset(0, 1), // changes position of shadow
-            ),
-          ],
-        ),
+      child: ChatBubbleWidget(
+        message: message,
+        nextMessageInGroup: nextMessageInGroup,
         child: child,
       ),
     );

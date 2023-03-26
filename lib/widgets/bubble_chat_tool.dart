@@ -8,6 +8,7 @@ class BubbleChatToolWidget extends StatelessWidget {
   final Widget child;
 
   final Function onCopyPressed;
+  
 
   List<ToolActionModel> get actions => [
         ToolActionModel(
@@ -40,10 +41,7 @@ class BubbleChatToolWidget extends StatelessWidget {
           ),
         );
       },
-      child: Hero(
-        tag: 'bubble_chat_tool',
-        child: child,
-      ),
+      child: child,
     );
   }
 }
@@ -76,10 +74,7 @@ class AlertBubbleChatTool extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Hero(
-                  tag: 'bubble_chat_tool',
-                  child: child,
-                ),
+                child,
                 const SizedBox(
                   height: 10,
                 ),
