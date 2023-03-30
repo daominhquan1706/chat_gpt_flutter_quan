@@ -6,8 +6,3 @@ class AppConstant {
         fontSize: 18,
       );
 }
-
-class AppColor {
-  static Color get userChatBackground => const Color(0xff1D1C21);
-  static Color get chatGptBackgroundColor => Colors.white;
-}

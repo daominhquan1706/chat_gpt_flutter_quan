@@ -1,5 +1,5 @@
 import 'package:chat_gpt_flutter_quan/service/app_controller.dart';
-import 'package:chat_gpt_flutter_quan/utils/constants.dart';
+import 'package:chat_gpt_flutter_quan/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:get/get.dart';
@@ -21,30 +21,15 @@ class ChatBubbleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const bigCorner = Radius.circular(16);
-    const smallCorner = Radius.circular(3);
+    const smallCorner = Radius.circular(16);
     if (isAuthor) {
-      return Container(
-        decoration: BoxDecoration(
-          color: AppColor.userChatBackground,
-          borderRadius: BorderRadius.only(
-            topLeft: bigCorner,
-            topRight: bigCorner,
-            bottomLeft: bigCorner,
-            bottomRight: nextMessageInGroup ? bigCorner : smallCorner,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 1), // changes position of shadow
-            ),
-          ],
-        ),
+      return SizedBox(
+        width: double.infinity,
         child: child,
       );
     }
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         color: AppColor.chatGptBackgroundColor,
         borderRadius: BorderRadius.only(
@@ -53,14 +38,6 @@ class ChatBubbleWidget extends StatelessWidget {
           bottomRight: bigCorner,
           bottomLeft: nextMessageInGroup ? bigCorner : smallCorner,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: const Offset(0, 1), // changes position of shadow
-          ),
-        ],
       ),
       child: child,
     );

@@ -27,11 +27,11 @@ class ChatGptContainerWidget extends GetWidget<ChatGptContainerWidgetController>
   @override
   Widget build(BuildContext context) {
     return Obx(
-      // () => SelectableText(
-      //   controller.message.value,
-      //   style: textStyle,
-      // ).paddingSymmetric(horizontal: 16, vertical: 14),
-      () => buildMarkdown(controller.message.value).paddingSymmetric(horizontal: 16, vertical: 14),
+      () => SelectableText(
+        controller.message.value,
+        style: textStyle,
+      ).paddingSymmetric(horizontal: 16, vertical: 14),
+      // () => buildMarkdown(controller.message.value).paddingSymmetric(horizontal: 16, vertical: 14),
     );
   }
 

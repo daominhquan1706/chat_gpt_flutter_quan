@@ -42,7 +42,7 @@ class RoomPageController extends GetxController {
       users: [chatGptUser, user],
     ));
     await fetchRooms();
-    await Get.toNamed('/room/${rooms.last.id}');
+    await Get.toNamed('/room/${rooms.first.id}');
     await fetchRooms();
   }
 

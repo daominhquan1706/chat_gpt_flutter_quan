@@ -7,6 +7,7 @@ import 'package:chat_gpt_flutter_quan/service/room_chat_service.dart';
 import 'package:chat_gpt_flutter_quan/utils/string_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -38,6 +39,10 @@ class ChatPageController extends GetxController {
   AdModel bottomAd;
   int totalTokens = 0;
   // String idLoading;
+  final TextEditingController messageController = TextEditingController();
+  final FocusNode messageFocusNode = FocusNode();
+  //drawerkey
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void onInit() {
@@ -237,5 +242,13 @@ class ChatPageController extends GetxController {
     // Insert the new message into the list at the same index as the removed one
     messages.insert(indexLoading, message);
     return messages;
+  }
+
+  void closeDrawer() {
+    scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  void openDrawer() {
+    scaffoldKey.currentState?.openDrawer();
   }
 }

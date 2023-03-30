@@ -22,7 +22,7 @@ abstract class AppPages {
     GetPage(
       name: Routes.CHAT,
       transition: Transition.fadeIn,
-      page: () => const ChatPage(),
+      page: () => ChatPage(),
       bindings: [
         BindingsBuilder(() => Get.put<ChatPageController>(ChatPageController())),
       ],

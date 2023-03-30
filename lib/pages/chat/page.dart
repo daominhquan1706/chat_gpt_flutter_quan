@@ -2,71 +2,157 @@ import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/controller.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/widgets/chat_bubble_widget.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/widgets/chat_type_welcome_widget.dart';
-import 'package:chat_gpt_flutter_quan/utils/constants.dart';
-import 'package:chat_gpt_flutter_quan/utils/functions.dart';
-import 'package:chat_gpt_flutter_quan/widgets/ad_mod_widget.dart';
-import 'package:chat_gpt_flutter_quan/widgets/bubble_chat_tool.dart';
-import 'package:chat_gpt_flutter_quan/widgets/chat_gpt_container.dart';
+import 'package:chat_gpt_flutter_quan/utils/utils.dart';
+import 'package:chat_gpt_flutter_quan/widgets/text_field_message.dart';
+import 'package:chat_gpt_flutter_quan/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class ChatPage extends GetView<ChatPageController> {
-  const ChatPage({Key key}) : super(key: key);
+class ChatPage extends GetResponsiveView<ChatPageController> {
+  ChatPage({Key key}) : super(key: key);
   TextStyle get textStyle => AppConstant.textStyle;
 
   @override
   ChatPageController get controller => Get.put(ChatPageController(), tag: Get.parameters['roomId']);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xff1D1C21),
-          // leading: ClipRRect(
-          //   borderRadius: BorderRadius.circular(8),
-          //   child: Image.asset('assets/images/logo.jpg'),
-          // ).paddingAll(6),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget phone() {
+    return Scaffold(
+      key: controller.scaffoldKey,
+      backgroundColor: AppColor.backgroundColor,
+      appBar: _buildAppBar(),
+      drawer: _buildDrawer(),
+      body: _buildChat(),
+    );
+  }
+
+  @override
+  Widget tablet() {
+    return Scaffold(
+      appBar: _buildAppBar(),
+      backgroundColor: AppColor.backgroundColor,
+      body: Row(
+        children: [
+          _buildDrawer(),
+          Expanded(
+              child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 800,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: _buildChat(),
+              ).paddingOnly(bottom: 16),
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget desktop() {
+    return Scaffold(
+      appBar: _buildAppBar(),
+      backgroundColor: AppColor.backgroundColor,
+      body: Row(
+        children: [
+          _buildDrawer(),
+          Expanded(
+              child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 800,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: _buildChat(),
+              ).paddingOnly(bottom: 16),
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+
+  Drawer _buildDrawer() {
+    return Drawer(
+      elevation: 0,
+      backgroundColor: AppColor.backgroundColor,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: ListTile(
+              leading: const Icon(Icons.replay),
+              title: const Text('Reset chat'),
+              onTap: () {
+                controller.closeDrawer();
+                controller.handleClearHistoryPressed();
+              },
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.restore),
+            title: const Text('History'),
+            onTap: () {
+              controller.closeDrawer();
+              Get.back();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: AppColor.backgroundColor,
+      automaticallyImplyLeading: false,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.menu,
+          color: Colors.black,
+        ),
+        onPressed: () {
+          if (screen.isDesktop) {
+            return;
+          }
+          controller.openDrawer();
+        },
+      ),
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Chatty GPT',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+            ),
+          ),
+          8.horizontalSpace,
+          Row(
             children: [
-              const Text(
-                'Chatty GPT',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
+              Text(
+                'Online',
+                style: textStyle.copyWith(
+                  color: Colors.green,
+                  fontSize: 14,
                 ),
               ),
-              Row(
-                children: [
-                  Text(
-                    'Online',
-                    style: textStyle.copyWith(
-                      color: Colors.green,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              )
             ],
-          ),
-          actions: [
-            // clear history button
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: controller.handleClearHistoryPressed,
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-            Expanded(child: _buildChat()),
-          ],
-        ),
-        // bottomNavigationBar: AdvertiseWidget(
-        //   ad: controller.bottomAd,
-        // ),
-      );
+          )
+        ],
+      ),
+    );
+  }
 
   Obx _buildChat() {
     return Obx(
@@ -78,6 +164,13 @@ class ChatPage extends GetView<ChatPageController> {
         bubbleBuilder: _bubbleBuilder,
         theme: DefaultChatTheme(
           backgroundColor: Colors.grey.shade200,
+        ),
+        customBottomWidget: TextFieldMessage(
+          messageFocusNode: controller.messageFocusNode,
+          messageController: controller.messageController,
+          onSubmitted: (message) {
+            controller.handleSendPressed(types.PartialText(text: message));
+          },
         ),
         customMessageBuilder: (p0, {messageWidth}) {
           final ChatType type = p0.metadata['type'];
@@ -101,8 +194,11 @@ class ChatPage extends GetView<ChatPageController> {
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircularProgressIndicator().paddingAll(16),
-                  const Text('Loading...').paddingAll(16),
+                  LoadingAnimationWidget.beat(
+                    color: AppColor.chatGptTextColor,
+                    size: 30,
+                  ).paddingAll(16),
+                  const Spacer(),
                   ElevatedButton(
                     onPressed: () {
                       controller.handleCancelPressed(p0.id);
@@ -127,9 +223,11 @@ class ChatPage extends GetView<ChatPageController> {
           if (isChatGPT) {
             return ChatGptContainerWidget(p0);
           }
-          return Text(
+          return SelectableText(
             p0.metadata['text'].toString(),
-            style: textStyle.copyWith(color: isChatGPT ? Colors.black : Colors.white),
+            style: textStyle.copyWith(
+              color: isChatGPT ? AppColor.chatGptTextColor : AppColor.userChatTextColor,
+            ),
           ).paddingSymmetric(horizontal: 16, vertical: 14);
         },
       ),
