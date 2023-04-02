@@ -68,9 +68,15 @@ class ChatGPTRepository {
 
     if (response.statusCode == 200) {
       Get.log(response.body);
-      return jsonDecode(response.body)['choices'][0]['text'];
+      return correctUtf8(jsonDecode(response.body)['choices'][0]['text']);
     } else {
       return '';
     }
+  }
+
+  static String correctUtf8(String input) {
+    List<int> bytes = latin1.encode(input);
+    String result = utf8.decode(bytes);
+    return result;
   }
 }

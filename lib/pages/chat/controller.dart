@@ -139,6 +139,7 @@ class ChatPageController extends GetxController {
           'type': ChatType.normalMessage.name,
           'stream': result,
           'roomId': roomId,
+          'userMessageId': userMessage.id,
         },
       );
       insertMessages(indexLoading, textMessage);
@@ -248,32 +249,19 @@ class ChatPageController extends GetxController {
 
     // Delete the CancelToken object with the given id
     Get.delete<CancelToken>(tag: id);
-    messages.value = replaceLoadingMessage(
-      id,
-      messages,
-      types.CustomMessage(
-        author: chatGptUser,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: StringUtils.randomString(10),
-        metadata: {
-          'type': ChatType.errorMessage.name,
-          'error': 'Request was canceled',
-        },
-      ),
-    );
-  }
-
-  static List<types.Message> replaceLoadingMessage(
-      String idLoading, List<types.Message> messages, types.CustomMessage message) {
-    // Find the index of the message with the given id
-    final indexLoading = messages.indexWhere((element) => element.id == idLoading);
-
-    // Remove the message from the list
+    final indexLoading = messages.indexWhere((element) => element.id == id);
     messages.removeAt(indexLoading);
-
-    // Insert the new message into the list at the same index as the removed one
-    messages.insert(indexLoading, message);
-    return messages;
+    messages.insert(
+        indexLoading,
+        types.CustomMessage(
+          author: chatGptUser,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          id: StringUtils.randomString(10),
+          metadata: {
+            'type': ChatType.errorMessage.name,
+            'error': 'Request was canceled',
+          },
+        ));
   }
 
   void closeDrawer() {

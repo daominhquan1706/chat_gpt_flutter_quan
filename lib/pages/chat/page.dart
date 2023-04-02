@@ -221,7 +221,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
                       },
                       // change to red
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                      child: const Text('Stop'),
+                      child: const Text('Stop', style: TextStyle(color: Colors.white)),
                     ).paddingAll(16),
                   ],
                 );

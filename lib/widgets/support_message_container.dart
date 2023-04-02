@@ -1,6 +1,8 @@
+import 'package:chat_gpt_flutter_quan/utils/utils.dart';
 import 'package:chat_gpt_flutter_quan/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 enum SupportMessageContainerWidgetType {
   search,
@@ -21,16 +23,14 @@ class SupportMessageContainerWidget extends GetWidget<ChatGptContainerWidgetCont
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(
-              alignment: WrapAlignment.start,
-              spacing: 8,
-              children: [
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            alignment: WrapAlignment.start,
+            spacing: 8,
+            children: [
+              if (controller.isSearching.value == false && controller.listKeywords.isEmpty == true)
                 _buildButton(
                   'Search',
                   Image.network(
@@ -42,22 +42,28 @@ class SupportMessageContainerWidget extends GetWidget<ChatGptContainerWidgetCont
                     controller.searchText();
                   },
                 ),
-                _buildButton(
-                  'Copy',
-                  const Icon(
-                    Icons.copy,
-                    size: 20,
-                  ),
-                  () {
-                    controller.copyText();
-                  },
+              _buildButton(
+                'Copy',
+                const Icon(
+                  Icons.copy,
+                  size: 20,
                 ),
-              ],
+                () {
+                  controller.copyText();
+                },
+              ),
+            ],
+          ).paddingSymmetric(horizontal: 16, vertical: 14),
+          if (controller.isSearching.value)
+            const LinearProgressIndicator(
+              minHeight: 2,
             ).paddingSymmetric(horizontal: 16, vertical: 14),
-            if (controller.listKeywords.isNotEmpty == true)
-              AnimatedContainer(
+          LayoutBuilder(
+            builder: (context, constraint) {
+              return AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                height: 70,
+                height: controller.listKeywords.isNotEmpty == true ? 70 : 0,
+                width: controller.listKeywords.isNotEmpty == true ? constraint.maxWidth : 0,
                 child: ListView.separated(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -65,9 +71,10 @@ class SupportMessageContainerWidget extends GetWidget<ChatGptContainerWidgetCont
                   itemCount: controller.listKeywords.length,
                   itemBuilder: (context, index) => _buildKeywordItem(index),
                 ).paddingSymmetric(horizontal: 16, vertical: 14),
-              )
-          ],
-        ),
+              );
+            },
+          )
+        ],
       ),
     );
   }

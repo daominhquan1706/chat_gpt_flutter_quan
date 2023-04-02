@@ -61,6 +61,7 @@ class ChatGptContainerWidgetController extends GetxController {
   String get text => customMessage.metadata!['text'] as String;
   late StreamSubscription streamSubscription;
   RxList<String> listKeywords = RxList<String>([]);
+  final RxBool isSearching = false.obs;
 
   @override
   void onInit() {
@@ -90,6 +91,7 @@ class ChatGptContainerWidgetController extends GetxController {
                   ..metadata!['text'] = message.value);
             streamSubscription.cancel();
             isDone.value = true;
+            // searchText();
           }
         }
       }
@@ -105,10 +107,11 @@ class ChatGptContainerWidgetController extends GetxController {
 
   Future<void> searchText() async {
     try {
-      EasyLoading.show();
-      final promt = 'generate 7 keywords relate to "${message.value}":';
+      isSearching.value = true;
+      final promt = 'generate 5 search keywords with this message "${message.value}":';
       Get.log(promt);
       final result = await ChatGPTRepository.generateTextCompletion(promt);
+      isSearching.value = false;
       if (result == null) {
         EasyLoading.showError('please try again!');
         return;
@@ -129,5 +132,9 @@ class ChatGptContainerWidgetController extends GetxController {
 
   void searchKeyWord(String keyword) {
     launchUrlString('https://www.google.com/search?q=$keyword');
+  }
+
+  String getGoogleKeyword(String keyword) {
+    return 'https://www.google.com/search?q=$keyword';
   }
 }
