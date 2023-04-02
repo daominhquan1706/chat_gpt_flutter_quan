@@ -62,9 +62,9 @@ class ChatPageController extends GetxController {
 
   @override
   void onClose() {
-    scaffoldKey?.currentState?.dispose();
-    messageController?.dispose();
-    messageFocusNode?.dispose();
+    scaffoldKey.currentState?.dispose();
+    messageController.dispose();
+    messageFocusNode.dispose();
 
     super.onClose();
   }
@@ -124,6 +124,7 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
+          "type": ChatType.normalMessage,
           "stream": result,
           "roomId": roomId,
         },
@@ -177,6 +178,7 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: randomString,
         metadata: {
+          "type": ChatType.normalMessage,
           "text": message.text,
         });
 

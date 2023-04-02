@@ -49,7 +49,7 @@ class RoomPage extends GetView<RoomPageController> {
   Widget _buildRoomItem(types.Room room, int index) {
     return InkWell(
       onTap: () {
-        controller.goToRoom(room);
+        controller.goToRoom(room.id);
       },
       child: Container(
         decoration: BoxDecoration(

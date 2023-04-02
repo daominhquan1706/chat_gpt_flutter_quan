@@ -8,7 +8,7 @@ import 'package:dio/dio.dart';
 
 class ChatGPTRepository {
   static const String apiUrl = "https://api.openai.com/v1/chat/completions";
-  static String get token => F.apiTokenChatGPT;
+  static String? get token => F.apiTokenChatGPT;
   static Dio dio = Dio();
 
   // make stream request call to chatgpt api

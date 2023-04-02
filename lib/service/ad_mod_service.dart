@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdModService extends GetxService {
-  static final isReady = false.obs;
   static int totalTokens = 0;
 
   late AdModel bottomAd;
@@ -13,15 +12,15 @@ class AdModService extends GetxService {
   List<AdModel> adsChat = [];
 
   static String? get bannerAdUnitId {
-    if (!kIsWeb) {
+    if (!kIsWeb && F.bannerAdUnitBottomBanner != null) {
       return F.bannerAdUnitBottomBanner;
     }
     return null;
   }
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     if (!kIsWeb) {
       _loadBottomAd();
     }

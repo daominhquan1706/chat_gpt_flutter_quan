@@ -29,7 +29,7 @@ class RoomPageController extends GetxController {
   void onReady() {
     fetchRooms().then((_) {
       if (rooms.isNotEmpty) {
-        // goToRoom(rooms.first);
+        // goToRoom(rooms.first.id);
       } else {
         // onCreateNewChat();
       }
@@ -39,21 +39,20 @@ class RoomPageController extends GetxController {
   }
 
   Future<void> onCreateNewChat() async {
+    final roomId = StringUtils.randomString(10);
     await RoomChatService.createRoom(types.Room(
-      id: StringUtils.randomString(10),
+      id: roomId,
       lastMessages: const [],
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       type: types.RoomType.direct,
       users: [chatGptUser, user],
     ));
-    await fetchRooms();
-    await Get.toNamed('/room/${rooms.first.id}');
-    await fetchRooms();
+    goToRoom(roomId);
   }
 
-  Future<void> goToRoom(types.Room room) async {
-    await Get.toNamed('/room/${room.id}');
+  Future<void> goToRoom(String roomId) async {
+    await Get.toNamed('/room/$roomId');
     await fetchRooms();
   }
 

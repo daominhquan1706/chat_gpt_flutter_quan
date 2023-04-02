@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatPage extends GetResponsiveView<ChatPageController> {
@@ -87,6 +88,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
+          SafeArea(child: 16.verticalSpace),
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: ListTile(
@@ -125,6 +127,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
           if (screen.isDesktop) {
             return;
           }
+          FocusNode().requestFocus();
           controller.openDrawer();
         },
       ),
@@ -157,6 +160,10 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
 
   Obx _buildChat() {
     return Obx(() => Chat(
+          timeFormat: DateFormat(''),
+          dateHeaderBuilder: (date) {
+            return const SizedBox.shrink();
+          },
           messages: controller.messages.value,
           onSendPressed: controller.handleSendPressed,
           user: controller.user,
@@ -227,7 +234,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
                   style: textStyle.copyWith(
                     color: isChatGPT ? AppColor.chatGptTextColor : AppColor.userChatTextColor,
                   ),
-                ).paddingSymmetric(horizontal: 16, vertical: 14);
+                ).paddingSymmetric(horizontal: 16, vertical: isChatGPT ? 14 : 0);
               default:
                 return const SizedBox.shrink();
             }

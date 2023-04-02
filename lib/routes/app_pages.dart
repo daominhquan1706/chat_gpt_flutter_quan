@@ -35,7 +35,7 @@ abstract class AppPages {
     GetPage(
       name: Routes.ROOM,
       transition: Transition.fadeIn,
-      page: () => RoomPage(),
+      page: () => const RoomPage(),
       bindings: [
         BindingsBuilder(
             () => Get.put<RoomPageController>(RoomPageController())),

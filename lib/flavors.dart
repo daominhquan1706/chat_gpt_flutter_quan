@@ -16,6 +16,6 @@ class F {
     }
   }
 
-  static late String apiTokenChatGPT;
-  static late String bannerAdUnitBottomBanner;
+  static late String? apiTokenChatGPT;
+  static late String? bannerAdUnitBottomBanner;
 }
