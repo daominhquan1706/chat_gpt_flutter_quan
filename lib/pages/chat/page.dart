@@ -179,10 +179,17 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
             },
           ),
           customMessageBuilder: (p0, {required messageWidth}) {
-            if (p0.metadata == null) {
+            if (p0.metadata == null &&
+                p0.metadata?.containsKey('type') == false &&
+                p0.metadata!['type'] is String == false &&
+                ChatType.values.contains(p0.metadata!['type']) == false) {
               return const SizedBox.shrink();
             }
-            final ChatType type = p0.metadata!['type'] ?? ChatType.unknown;
+            final ChatType? type =
+                ChatType.values.firstWhereOrNull((element) => element.name == p0.metadata!['type']);
+            if (type == null) {
+              return const SizedBox.shrink();
+            }
             switch (type) {
               case ChatType.advertisement:
                 return Obx(() {

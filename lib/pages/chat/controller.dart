@@ -25,7 +25,20 @@ class ChatPageController extends GetxController {
   final isLoading = false.obs;
   final RxList<types.Message> messages = RxList<types.Message>([]);
   // AutoScrollController scrollController = AutoScrollController();
-  List<Map<String, String>> contextMessages = [];
+  List<Map<String, String>> get contextMessages {
+    final list = <Map<String, String>>[];
+    for (var element in messages) {
+      if (element is types.CustomMessage &&
+          element.metadata?.containsKey('type') == true &&
+          element.metadata!['type'] == ChatType.normalMessage.name) {
+        list.add({
+          'role': element.author.id == user.id ? 'user' : 'assistant',
+          'content': element.metadata!['text'] ?? '',
+        });
+      }
+    }
+    return list.reversed.toList();
+  }
 
   types.User get chatGptUser => Get.find<AppController>().chatGptUser;
   types.User get user => Get.find<AppController>().user;
@@ -76,7 +89,9 @@ class ChatPageController extends GetxController {
         author: chatGptUser,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
-        metadata: const {"type": ChatType.welcome},
+        metadata: {
+          "type": ChatType.welcome.name,
+        },
       ),
     );
 
@@ -97,22 +112,19 @@ class ChatPageController extends GetxController {
     )..generateAd();
   }
 
-  void _chat(String input) async {
+  void _chat(String input, {required types.CustomMessage userMessage}) async {
     final idLoading = StringUtils.randomString(10);
     try {
       calculateAddAdvertisement();
       showChatLoading(idLoading);
 
-      var result = await ChatGPTRepository.makeRequest(
+      var result = await ChatGPTRepository.generateChat(
         [
           ...contextMessages,
-          {
-            "role": "user",
-            "content": input,
-          },
         ],
         idLoading: idLoading,
       );
+
       final indexLoading = messages.indexWhere((element) => element.id == idLoading);
       messages.removeAt(indexLoading);
       if (result == null) {
@@ -124,7 +136,7 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "type": ChatType.normalMessage,
+          "type": ChatType.normalMessage.name,
           "stream": result,
           "roomId": roomId,
         },
@@ -140,7 +152,7 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "type": ChatType.errorMessage,
+          "type": ChatType.errorMessage.name,
           "error": kDebugMode ? e.toString() : 'Something went wrong',
         },
       );
@@ -178,7 +190,7 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: randomString,
         metadata: {
-          "type": ChatType.normalMessage,
+          "type": ChatType.normalMessage.name,
           "text": message.text,
         });
 
@@ -186,7 +198,7 @@ class ChatPageController extends GetxController {
 
     MessageChatService.createMessage(roomId!, textMessage);
 
-    _chat(message.text);
+    _chat(message.text, userMessage: textMessage);
   }
 
   void calculateAddAdvertisement() {
@@ -199,7 +211,7 @@ class ChatPageController extends GetxController {
           createdAt: DateTime.now().millisecondsSinceEpoch,
           id: StringUtils.randomString(10),
           metadata: {
-            "type": ChatType.advertisement,
+            "type": ChatType.advertisement.name,
             "advertisement": AdModel(
               adSize: const AdSize(
                 height: 250,
@@ -243,8 +255,8 @@ class ChatPageController extends GetxController {
         author: chatGptUser,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
-        metadata: const {
-          "type": ChatType.errorMessage,
+        metadata: {
+          "type": ChatType.errorMessage.name,
           "error": 'Request was canceled',
         },
       ),
