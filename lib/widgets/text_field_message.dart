@@ -42,8 +42,8 @@ class TextFieldMessage extends StatelessWidget {
                     onFieldSubmitted: (value) {
                       if (value.isNotEmpty) {
                         onSubmitted(value);
-                        messageController.text = '';
-                        messageFocusNode.requestFocus();
+                        messageController?.text = '';
+                        messageFocusNode?.requestFocus();
                       }
                     },
                   ).paddingSymmetric(horizontal: 16, vertical: 20),

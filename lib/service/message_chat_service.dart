@@ -1,3 +1,4 @@
+import 'package:chat_gpt_flutter_quan/service/room_chat_service.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:get_storage/get_storage.dart';
@@ -14,6 +15,7 @@ class MessageChatService extends GetxService {
     final messages = box.read<List>('messages_$roomId') ?? [];
     messages.add(message.toJson());
     await box.write('messages_$roomId', messages);
+    await RoomChatService.updateLastUpdatedMessage(roomId);
     return message;
   }
 

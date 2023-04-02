@@ -61,8 +61,7 @@ class RoomPage extends GetView<RoomPageController> {
           children: [
             ListTile(
               title: Text(
-                toTimeAgo(DateTime.fromMicrosecondsSinceEpoch(
-                    room.createdAt! * 1000)),
+                'Last Message: ${toTimeAgo(DateTime.fromMicrosecondsSinceEpoch(room.updatedAt! * 1000))}', 
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -155,8 +154,6 @@ class RoomPage extends GetView<RoomPageController> {
       return '${difference.inHours} hours ago';
     } else if (difference.inMinutes >= 1) {
       return '${difference.inMinutes} minutes ago';
-    } else if (difference.inSeconds >= 1) {
-      return '${difference.inSeconds} seconds ago';
     } else {
       return 'just now';
     }

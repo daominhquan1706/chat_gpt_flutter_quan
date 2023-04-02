@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 enum ChatType {
   welcome,
@@ -19,14 +18,13 @@ enum ChatType {
   normalMessage,
   errorMessage,
   advertisement,
+  unknown,
 }
 
 class ChatPageController extends GetxController {
   final isLoading = false.obs;
   final RxList<types.Message> messages = RxList<types.Message>([]);
-
-  AutoScrollController get scrollController =>
-      Get.put<AutoScrollController>(AutoScrollController());
+  // AutoScrollController scrollController = AutoScrollController();
   List<Map<String, String>> contextMessages = [];
 
   types.User get chatGptUser => Get.find<AppController>().chatGptUser;
@@ -38,13 +36,16 @@ class ChatPageController extends GetxController {
   late AdModel bottomAd;
   int totalTokens = 0;
   // String idLoading;
-  final TextEditingController messageController = TextEditingController();
-  final FocusNode messageFocusNode = FocusNode();
+  late TextEditingController messageController;
+  late FocusNode messageFocusNode;
   //drawerkey
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  late GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   void onInit() {
+    scaffoldKey = GlobalKey<ScaffoldState>();
+    messageController = TextEditingController();
+    messageFocusNode = FocusNode();
     initMessage();
     if (roomId != null) {
       RoomChatService.getRoom(roomId!).then((value) {
@@ -59,8 +60,17 @@ class ChatPageController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    scaffoldKey?.currentState?.dispose();
+    messageController?.dispose();
+    messageFocusNode?.dispose();
+
+    super.onClose();
+  }
+
   Future<void> initMessage() async {
-    messages.insert(
+    insertMessages(
       0,
       types.CustomMessage(
         author: chatGptUser,
@@ -118,7 +128,7 @@ class ChatPageController extends GetxController {
           "roomId": roomId,
         },
       );
-      messages.insert(indexLoading, textMessage);
+      insertMessages(indexLoading, textMessage);
     } on DioError catch (e) {
       if (e.type == DioErrorType.cancel) {
         print("Request was canceled");
@@ -136,7 +146,7 @@ class ChatPageController extends GetxController {
 
       final index = messages.indexWhere((element) => element.id == idLoading);
       messages.removeAt(index);
-      messages.insert(index, textMessage);
+      insertMessages(index, textMessage);
     } finally {
       isLoading.value = false;
       messages.removeWhere((element) => element.id == idLoading);
@@ -152,14 +162,20 @@ class ChatPageController extends GetxController {
           'type': ChatType.loading,
         });
 
-    messages.insert(0, imageMessage);
+    insertMessages(0, imageMessage);
+  }
+
+  void insertMessages(int position, types.CustomMessage message) {
+    messages.insert(position, message);
+    // chatKey?.currentState?.scrollToMessage(message?.id);
   }
 
   void handleSendPressed(types.PartialText message) {
+    var randomString = StringUtils.randomString(10);
     final textMessage = types.CustomMessage(
         author: user,
         createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: StringUtils.randomString(10),
+        id: randomString,
         metadata: {
           "text": message.text,
         });
@@ -169,13 +185,12 @@ class ChatPageController extends GetxController {
     MessageChatService.createMessage(roomId!, textMessage);
 
     _chat(message.text);
-    scrollController.scrollToIndex(0);
   }
 
   void calculateAddAdvertisement() {
     if (messages.length % 3 == 0) {
       Get.log("Add advertisement");
-      messages.insert(
+      insertMessages(
         0,
         types.CustomMessage(
           author: chatGptUser,

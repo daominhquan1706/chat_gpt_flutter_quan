@@ -2,6 +2,15 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build and Deploy Web",
+            "type": "shell",
+            "command": "nvm use 16 && flutter build web --web-renderer canvaskit -t lib/main_prod.dart --release && firebase deploy --only hosting",
+            "group": {
+                "kind": "build",
+                // "isDefault": true,
+            }
+        },
+        {
             "label": "Build Web Production",
             "type": "flutter",
             "command": "flutter",

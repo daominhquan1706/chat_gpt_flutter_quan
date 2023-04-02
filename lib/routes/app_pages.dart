@@ -25,7 +25,11 @@ abstract class AppPages {
       page: () => ChatPage(),
       bindings: [
         BindingsBuilder(
-            () => Get.put<ChatPageController>(ChatPageController())),
+          () => Get.put<ChatPageController>(
+            ChatPageController(),
+            tag: Get.parameters['id'],
+          ),
+        ),
       ],
     ),
     GetPage(

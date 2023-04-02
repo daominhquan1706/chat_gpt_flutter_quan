@@ -22,13 +22,19 @@ class RoomPageController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    await fetchRooms();
     super.onInit();
   }
 
   @override
   void onReady() {
-    goToRoom(rooms.first);
+    fetchRooms().then((_) {
+      if (rooms.isNotEmpty) {
+        // goToRoom(rooms.first);
+      } else {
+        // onCreateNewChat();
+      }
+    });
+
     super.onReady();
   }
 
@@ -68,6 +74,6 @@ class RoomPageController extends GetxController {
 
   Future<void> fetchRooms() async {
     rooms.value = (await RoomChatService.getRooms())
-      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      ..sort((a, b) => b.updatedAt!.compareTo(a.updatedAt!));
   }
 }

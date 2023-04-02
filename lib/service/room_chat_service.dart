@@ -42,6 +42,16 @@ class RoomChatService extends GetxService {
     return room;
   }
 
+  //update lastUpdatedMessage
+  static Future<types.Room> updateLastUpdatedMessage(String roomId) async {
+    final box = GetStorage();
+    final rooms = box.read<List>('rooms') ?? [];
+    final index = rooms.indexWhere((element) => element['id'] == roomId);
+    final room = types.Room.fromJson(rooms[index]);
+    rooms[index] = room.toJson()..['updatedAt'] = DateTime.now().millisecondsSinceEpoch;
+    return room;
+  }
+
   //delete room
   static Future<void> deleteRoom(String roomId) async {
     final box = GetStorage();

@@ -2,6 +2,7 @@ import 'package:chat_gpt_flutter_quan/models/ad_model.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/controller.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/widgets/chat_bubble_widget.dart';
 import 'package:chat_gpt_flutter_quan/pages/chat/widgets/chat_type_welcome_widget.dart';
+import 'package:chat_gpt_flutter_quan/routes/app_pages.dart';
 import 'package:chat_gpt_flutter_quan/utils/utils.dart';
 import 'package:chat_gpt_flutter_quan/widgets/text_field_message.dart';
 import 'package:chat_gpt_flutter_quan/widgets/widgets.dart';
@@ -16,8 +17,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
   TextStyle get textStyle => AppConstant.textStyle;
 
   @override
-  ChatPageController get controller =>
-      Get.put(ChatPageController(), tag: Get.parameters['roomId']);
+  ChatPageController get controller => Get.find<ChatPageController>(tag: Get.parameters['id']!);
 
   @override
   Widget phone() {
@@ -47,7 +47,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: _buildChat(),
-              ).paddingOnly(bottom: 16),
+              ).paddingOnly(bottom: 16, right: 16),
             ),
           )),
         ],
@@ -103,7 +103,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
             title: const Text('History'),
             onTap: () {
               controller.closeDrawer();
-              Get.back();
+              Get.offAllNamed(Routes.ROOM);
             },
           ),
         ],
@@ -156,85 +156,83 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
   }
 
   Obx _buildChat() {
-    return Obx(
-      () => Chat(
-        scrollController: controller.scrollController,
-        messages: controller.messages.value,
-        onSendPressed: controller.handleSendPressed,
-        user: controller.user,
-        bubbleBuilder: _bubbleBuilder,
-        theme: DefaultChatTheme(
-          backgroundColor: Colors.grey.shade200,
-        ),
-        customBottomWidget: TextFieldMessage(
-          messageFocusNode: controller.messageFocusNode,
-          messageController: controller.messageController,
-          onSubmitted: (message) {
-            controller.handleSendPressed(types.PartialText(text: message));
-          },
-        ),
-        customMessageBuilder: (p0, {required messageWidth}) {
-          final ChatType type = p0.metadata!['type'];
-          switch (type) {
-            case ChatType.advertisement:
-              return Obx(() {
-                final AdModel advertisement = p0.metadata!['advertisement'];
-                if (advertisement.isReady.value) {
-                  return AdvertiseWidget(
-                    ad: advertisement,
-                  );
+    return Obx(() => Chat(
+          messages: controller.messages.value,
+          onSendPressed: controller.handleSendPressed,
+          user: controller.user,
+          bubbleBuilder: _bubbleBuilder,
+          theme: DefaultChatTheme(
+            backgroundColor: Colors.grey.shade200,
+          ),
+          customBottomWidget: TextFieldMessage(
+            messageFocusNode: controller.messageFocusNode,
+            messageController: controller.messageController,
+            onSubmitted: (message) {
+              controller.handleSendPressed(types.PartialText(text: message));
+            },
+          ),
+          customMessageBuilder: (p0, {required messageWidth}) {
+            if (p0.metadata == null) {
+              return const SizedBox.shrink();
+            }
+            final ChatType type = p0.metadata!['type'] ?? ChatType.unknown;
+            switch (type) {
+              case ChatType.advertisement:
+                return Obx(() {
+                  final AdModel advertisement = p0.metadata!['advertisement'];
+                  if (advertisement.isReady.value) {
+                    return AdvertiseWidget(
+                      ad: advertisement,
+                    );
+                  }
+                  return const SizedBox.shrink();
+                });
+              case ChatType.errorMessage:
+                return SelectableText(
+                  p0.metadata!['error'].toString(),
+                  style: textStyle.copyWith(color: Colors.red),
+                ).paddingSymmetric(horizontal: 16, vertical: 14);
+              case ChatType.loading:
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LoadingAnimationWidget.beat(
+                      color: AppColor.chatGptTextColor,
+                      size: 30,
+                    ).paddingAll(16),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: () {
+                        controller.handleCancelPressed(p0.id);
+                      },
+                      // change to red
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      child: const Text('Stop'),
+                    ).paddingAll(16),
+                  ],
+                );
+              case ChatType.welcome:
+                return ChatTypeWelComeWidget(
+                  onTapOption: (text) {
+                    controller.handleSendPressed(types.PartialText(text: text));
+                  },
+                );
+              case ChatType.normalMessage:
+                final isChatGPT = p0.author.id == controller.chatGptUser.id;
+                if (isChatGPT) {
+                  return ChatGptContainerWidget(p0);
                 }
+                return SelectableText(
+                  p0.metadata!['text'].toString(),
+                  style: textStyle.copyWith(
+                    color: isChatGPT ? AppColor.chatGptTextColor : AppColor.userChatTextColor,
+                  ),
+                ).paddingSymmetric(horizontal: 16, vertical: 14);
+              default:
                 return const SizedBox.shrink();
-              });
-            case ChatType.errorMessage:
-              return SelectableText(
-                p0.metadata!['error'].toString(),
-                style: textStyle.copyWith(color: Colors.red),
-              ).paddingSymmetric(horizontal: 16, vertical: 14);
-            case ChatType.loading:
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LoadingAnimationWidget.beat(
-                    color: AppColor.chatGptTextColor,
-                    size: 30,
-                  ).paddingAll(16),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.handleCancelPressed(p0.id);
-                    },
-                    // change to red
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text('Stop'),
-                  ).paddingAll(16),
-                ],
-              );
-            case ChatType.welcome:
-              return ChatTypeWelComeWidget(
-                onTapOption: (text) {
-                  controller.handleSendPressed(types.PartialText(text: text));
-                },
-              );
-            default:
-              break;
-          }
-          final isChatGPT = p0.author.id == controller.chatGptUser.id;
-          if (isChatGPT) {
-            return ChatGptContainerWidget(p0);
-          }
-          return SelectableText(
-            p0.metadata!['text'].toString(),
-            style: textStyle.copyWith(
-              color: isChatGPT
-                  ? AppColor.chatGptTextColor
-                  : AppColor.userChatTextColor,
-            ),
-          ).paddingSymmetric(horizontal: 16, vertical: 14);
-        },
-      ),
-    );
+            }
+          },
+        ));
   }
 
   Widget _bubbleBuilder(
@@ -244,12 +242,8 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
   }) {
     return BubbleChatToolWidget(
       onCopyPressed: () {
-        if (Get.isRegistered<ChatGptContainerWidgetController>(
-            tag: message.id)) {
-          final text =
-              Get.find<ChatGptContainerWidgetController>(tag: message.id)
-                  .message
-                  .value;
+        if (Get.isRegistered<ChatGptContainerWidgetController>(tag: message.id)) {
+          final text = Get.find<ChatGptContainerWidgetController>(tag: message.id).message.value;
           AppFunctions.copyTextToClipboard(text);
         }
       },
