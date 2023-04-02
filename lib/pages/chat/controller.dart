@@ -90,7 +90,7 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "type": ChatType.welcome.name,
+          'type': ChatType.welcome.name,
         },
       ),
     );
@@ -136,15 +136,15 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "type": ChatType.normalMessage.name,
-          "stream": result,
-          "roomId": roomId,
+          'type': ChatType.normalMessage.name,
+          'stream': result,
+          'roomId': roomId,
         },
       );
       insertMessages(indexLoading, textMessage);
     } on DioError catch (e) {
       if (e.type == DioErrorType.cancel) {
-        print("Request was canceled");
+        print('Request was canceled');
       }
     } catch (e) {
       final textMessage = types.CustomMessage(
@@ -152,8 +152,8 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "type": ChatType.errorMessage.name,
-          "error": kDebugMode ? e.toString() : 'Something went wrong',
+          'type': ChatType.errorMessage.name,
+          'error': kDebugMode ? e.toString() : 'Something went wrong',
         },
       );
 
@@ -171,8 +171,8 @@ class ChatPageController extends GetxController {
         author: chatGptUser,
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: idLoading,
-        metadata: const {
-          'type': ChatType.loading,
+        metadata: {
+          'type': ChatType.loading.name,
         });
 
     insertMessages(0, imageMessage);
@@ -190,8 +190,8 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: randomString,
         metadata: {
-          "type": ChatType.normalMessage.name,
-          "text": message.text,
+          'type': ChatType.normalMessage.name,
+          'text': message.text,
         });
 
     messages.insert(0, textMessage);
@@ -203,7 +203,7 @@ class ChatPageController extends GetxController {
 
   void calculateAddAdvertisement() {
     if (messages.length % 3 == 0) {
-      Get.log("Add advertisement");
+      Get.log('Add advertisement');
       insertMessages(
         0,
         types.CustomMessage(
@@ -211,8 +211,8 @@ class ChatPageController extends GetxController {
           createdAt: DateTime.now().millisecondsSinceEpoch,
           id: StringUtils.randomString(10),
           metadata: {
-            "type": ChatType.advertisement.name,
-            "advertisement": AdModel(
+            'type': ChatType.advertisement.name,
+            'advertisement': AdModel(
               adSize: const AdSize(
                 height: 250,
                 width: 300,
@@ -256,8 +256,8 @@ class ChatPageController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: StringUtils.randomString(10),
         metadata: {
-          "type": ChatType.errorMessage.name,
-          "error": 'Request was canceled',
+          'type': ChatType.errorMessage.name,
+          'error': 'Request was canceled',
         },
       ),
     );

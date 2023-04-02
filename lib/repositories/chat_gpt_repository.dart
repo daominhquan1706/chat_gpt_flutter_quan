@@ -8,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ChatGPTRepository {
-  static const String apiChatUrl = "https://api.openai.com/v1/chat/completions";
-  static const String apiTextCompelteUrl = "https://api.openai.com/v1/completions";
+  static const String apiChatUrl = 'https://api.openai.com/v1/chat/completions';
+  static const String apiTextCompelteUrl = 'https://api.openai.com/v1/completions';
   static String? get token => F.apiTokenChatGPT;
   static Dio dio = Dio();
 
@@ -23,16 +23,16 @@ class ChatGPTRepository {
       apiChatUrl,
       options: Options(
         headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json; charset=utf-8",
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=utf-8',
         },
         responseType: ResponseType.stream,
       ),
       data: {
-        "model": "gpt-3.5-turbo",
-        "messages": contextMessages,
+        'model': 'gpt-3.5-turbo',
+        'messages': contextMessages,
         // "max_tokens": 1000,
-        "stream": true,
+        'stream': true,
       },
       cancelToken: Get.put<CancelToken>(CancelToken(), tag: idLoading),
     );
@@ -56,13 +56,13 @@ class ChatGPTRepository {
     http.Response response = await http.post(
       Uri.parse(apiTextCompelteUrl),
       body: jsonEncode({
-        "model": "text-davinci-003",
-        "prompt": prompt,
-        "max_tokens": 1000,
+        'model': 'text-davinci-003',
+        'prompt': prompt,
+        'max_tokens': 1000,
       }),
       headers: {
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/json; charset=utf-8",
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json; charset=utf-8',
       },
     );
 

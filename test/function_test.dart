@@ -15,7 +15,7 @@ void main() {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: '1',
         metadata: const {
-          "type": ChatType.loading,
+          'type': ChatType.loading,
         },
       ),
       types.CustomMessage(
@@ -23,7 +23,7 @@ void main() {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: '3',
         metadata: const {
-          "type": ChatType.normalMessage,
+          'type': ChatType.normalMessage,
         },
       ),
     ];
@@ -33,8 +33,8 @@ void main() {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: '2',
         metadata: const {
-          "type": ChatType.errorMessage,
-          "error": 'Request was canceled',
+          'type': ChatType.errorMessage,
+          'error': 'Request was canceled',
         },
       ),
       types.CustomMessage(
@@ -42,7 +42,7 @@ void main() {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: '3',
         metadata: const {
-          "type": ChatType.normalMessage,
+          'type': ChatType.normalMessage,
         },
       ),
     ];
@@ -56,8 +56,8 @@ void main() {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: '2',
         metadata: const {
-          "type": ChatType.errorMessage,
-          "error": 'Request was canceled',
+          'type': ChatType.errorMessage,
+          'error': 'Request was canceled',
         },
       ),
     );

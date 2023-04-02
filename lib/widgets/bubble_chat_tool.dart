@@ -35,14 +35,14 @@ class BubbleChatToolWidget extends StatelessWidget {
     return GestureDetector(
       onLongPress: () {
         // focus node
-        FocusScope.of(context).requestFocus(FocusNode());
+        // FocusScope.of(context).requestFocus(FocusNode());
 
-        Get.dialog(
-          AlertBubbleChatTool(
-            actions: actions,
-            child: child,
-          ),
-        );
+        // Get.dialog(
+        //   AlertBubbleChatTool(
+        //     actions: actions,
+        //     child: child,
+        //   ),
+        // );
       },
       child: child,
     );
@@ -50,8 +50,7 @@ class BubbleChatToolWidget extends StatelessWidget {
 }
 
 class AlertBubbleChatTool extends StatelessWidget {
-  AlertBubbleChatTool({Key? key, required this.child, required this.actions})
-      : super(key: key);
+  AlertBubbleChatTool({Key? key, required this.child, required this.actions}) : super(key: key);
   final Widget child;
   final List<ToolActionModel> actions;
   final ScrollController scrollController = ScrollController(
@@ -90,10 +89,8 @@ class AlertBubbleChatTool extends StatelessWidget {
                   ),
                   child: Column(
                     children: actions
-                        .map((e) => _buildButton(
-                            text: e.title,
-                            onPressed: e.onPressed,
-                            icon: e.icon))
+                        .map((e) =>
+                            _buildButton(text: e.title, onPressed: e.onPressed, icon: e.icon))
                         .toList(),
                   ),
                 ),
@@ -105,8 +102,7 @@ class AlertBubbleChatTool extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(
-      {required String text, Function()? onPressed, required IconData icon}) {
+  Widget _buildButton({required String text, Function()? onPressed, required IconData icon}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

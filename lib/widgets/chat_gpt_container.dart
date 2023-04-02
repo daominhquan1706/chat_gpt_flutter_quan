@@ -50,7 +50,7 @@ class ChatGptContainerWidget extends GetWidget<ChatGptContainerWidgetController>
 }
 
 class ChatGptContainerWidgetController extends GetxController {
-  final RxString message = RxString("");
+  final RxString message = RxString('');
 
   final types.CustomMessage customMessage;
 
