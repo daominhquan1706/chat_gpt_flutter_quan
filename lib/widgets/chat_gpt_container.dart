@@ -8,10 +8,12 @@ import 'package:chat_gpt_flutter_quan/models/chat_gpt_response.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:markdown_widget/markdown_widget.dart';
 
-class ChatGptContainerWidget extends GetWidget<ChatGptContainerWidgetController> {
+class ChatGptContainerWidget
+    extends GetWidget<ChatGptContainerWidgetController> {
   @override
   ChatGptContainerWidgetController get controller =>
-      Get.put(ChatGptContainerWidgetController(customMessage), tag: customMessage.id.toString());
+      Get.put(ChatGptContainerWidgetController(customMessage),
+          tag: customMessage.id.toString());
 
   final types.CustomMessage customMessage;
   TextStyle get textStyle => const TextStyle(
@@ -21,7 +23,7 @@ class ChatGptContainerWidget extends GetWidget<ChatGptContainerWidgetController>
 
   const ChatGptContainerWidget(
     this.customMessage, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -35,7 +37,8 @@ class ChatGptContainerWidget extends GetWidget<ChatGptContainerWidgetController>
     );
   }
 
-  Widget buildMarkdown(String data) => Column(children: MarkdownGenerator().buildWidgets(data));
+  Widget buildMarkdown(String data) =>
+      Column(children: MarkdownGenerator().buildWidgets(data));
 }
 
 class ChatGptContainerWidgetController extends GetxController {
@@ -45,10 +48,11 @@ class ChatGptContainerWidgetController extends GetxController {
 
   ChatGptContainerWidgetController(this.customMessage);
   final RxBool isDone = false.obs;
-  Stream<String> get stream => customMessage.metadata['stream'] as Stream<String>;
-  String get roomId => customMessage.metadata['roomId'] as String;
-  String get text => customMessage.metadata['text'] as String;
-  StreamSubscription streamSubscription;
+  Stream<String> get stream =>
+      customMessage.metadata!['stream'] as Stream<String>;
+  String get roomId => customMessage.metadata!['roomId'] as String;
+  String get text => customMessage.metadata!['text'] as String;
+  late StreamSubscription streamSubscription;
   @override
   void onInit() {
     if (stream == null) {
@@ -60,13 +64,11 @@ class ChatGptContainerWidgetController extends GetxController {
       final splitEvents = event.split('data: ');
       for (final splitEvent in splitEvents) {
         if (splitEvent.contains('{') && splitEvent.contains('}')) {
-          final jsonString =
-              splitEvent.substring(splitEvent.indexOf('{'), splitEvent.lastIndexOf('}') + 1);
-          if (jsonString != null) {
-            final chatGPTResponse = processChatGPTResponse(jsonString);
-            if (chatGPTResponse?.text?.isNotEmpty == true) {
-              message.value += chatGPTResponse.text;
-            }
+          final jsonString = splitEvent.substring(
+              splitEvent.indexOf('{'), splitEvent.lastIndexOf('}') + 1);
+          final chatGPTResponse = processChatGPTResponse(jsonString);
+          if (chatGPTResponse.text.isNotEmpty == true) {
+            message.value += chatGPTResponse.text;
           }
         }
         if (event.contains('[DONE]') == true) {
@@ -74,8 +76,8 @@ class ChatGptContainerWidgetController extends GetxController {
             MessageChatService.createMessage(
                 roomId,
                 customMessage
-                  ..metadata['stream'] = null
-                  ..metadata['text'] = message.value);
+                  ..metadata!['stream'] = null
+                  ..metadata!['text'] = message.value);
             streamSubscription.cancel();
             isDone.value = true;
           }

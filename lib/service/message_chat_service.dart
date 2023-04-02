@@ -8,7 +8,8 @@ class MessageChatService extends GetxService {
   }
 
   //create message
-  static Future<types.Message> createMessage(String roomId, types.Message message) async {
+  static Future<types.Message> createMessage(
+      String roomId, types.Message message) async {
     final box = GetStorage();
     final messages = box.read<List>('messages_$roomId') ?? [];
     messages.add(message.toJson());
@@ -24,7 +25,8 @@ class MessageChatService extends GetxService {
   }
 
   //delete message
-  static Future<void> deleteMessage(String roomId, types.Message message) async {
+  static Future<void> deleteMessage(
+      String roomId, types.Message message) async {
     final box = GetStorage();
     final messages = box.read<List>('messages_$roomId') ?? [];
     messages.removeWhere((e) => e['id'] == message.id);
@@ -32,7 +34,8 @@ class MessageChatService extends GetxService {
   }
 
   //update message
-  static Future<void> updateMessage(String roomId, types.Message message) async {
+  static Future<void> updateMessage(
+      String roomId, types.Message message) async {
     final box = GetStorage();
     final messages = box.read<List>('messages_$roomId') ?? [];
     messages.removeWhere((e) => e['id'] == message.id);

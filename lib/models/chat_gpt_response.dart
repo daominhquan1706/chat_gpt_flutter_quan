@@ -5,17 +5,19 @@ class ChatGPTResponse {
   final Map<String, dynamic> entities;
   final int totalTokens;
 
-  ChatGPTResponse({this.text, this.entities, this.totalTokens});
+  ChatGPTResponse(
+      {required this.text, required this.entities, required this.totalTokens});
 
   factory ChatGPTResponse.fromJson(Map<String, dynamic> json) {
-    String text;
-    if ((json['choices'][0]['delta'] as Map<String, dynamic>).containsKey('content')) {
+    String text = '';
+    if ((json['choices'][0]['delta'] as Map<String, dynamic>)
+        .containsKey('content')) {
       text = json['choices'][0]['delta']['content'].toString();
     }
 
     return ChatGPTResponse(
       text: text,
-      entities: extractEntities(json),
+      entities: extractEntities(json), totalTokens: 0,
       // totalTokens: json['usage']['total_tokens'] as int,
     );
   }
@@ -24,16 +26,14 @@ class ChatGPTResponse {
     Map<String, dynamic> entities = {};
     Iterable<dynamic> extractedEntities = json['choices'][0]['entities'];
 
-    if (extractedEntities != null) {
-      for (var entity in extractedEntities) {
-        var name = entity['name'];
-        var value = entity['value'][entity['start'] + entity['end']];
+    for (var entity in extractedEntities) {
+      var name = entity['name'];
+      var value = entity['value'][entity['start'] + entity['end']];
 
-        if (!entities.containsKey(name)) {
-          entities[name] = <String>[];
-        }
-        entities[name].add(value.toString());
+      if (!entities.containsKey(name)) {
+        entities[name] = <String>[];
       }
+      entities[name].add(value.toString());
     }
     return entities;
   }

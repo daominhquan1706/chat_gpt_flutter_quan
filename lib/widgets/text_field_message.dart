@@ -7,7 +7,11 @@ class TextFieldMessage extends StatelessWidget {
 
   final Function(String) onSubmitted;
 
-  const TextFieldMessage({Key key, this.messageFocusNode, this.messageController, this.onSubmitted})
+  const TextFieldMessage(
+      {Key? key,
+      required this.messageFocusNode,
+      required this.messageController,
+      required this.onSubmitted})
       : super(key: key);
 
   @override

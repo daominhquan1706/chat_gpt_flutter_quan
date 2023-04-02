@@ -5,7 +5,10 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdvertiseWidget extends StatelessWidget {
-  const AdvertiseWidget({Key key, this.ad}) : super(key: key);
+  const AdvertiseWidget({
+    Key? key,
+    required this.ad,
+  }) : super(key: key);
 
   AdModService get _adModService => Get.find<AdModService>();
   final AdModel ad;
@@ -16,7 +19,7 @@ class AdvertiseWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return Obx(() {
-      if (_adModService.bottomAd?.isReady?.value == true) {
+      if (_adModService.bottomAd.isReady.value == true) {
         return SizedBox(
           width: ad.adSize.width.toDouble(),
           height: ad.adSize.height.toDouble(),

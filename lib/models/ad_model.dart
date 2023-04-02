@@ -4,15 +4,16 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdModel {
-  String adUnitId;
+  String? adUnitId = AdModService.bannerAdUnitId;
   AdSize adSize;
   RxBool isReady = false.obs;
-  BannerAd bannerAd;
-  AdModel({this.adUnitId, this.adSize});
+  late BannerAd bannerAd;
+  AdModel({this.adUnitId, required this.adSize});
 
   void generateAd() {
+    if (adUnitId == null) return;
     bannerAd = BannerAd(
-      adUnitId: adUnitId ?? AdModService.bannerAdUnitId,
+      adUnitId: adUnitId!,
       request: const AdRequest(),
       size: adSize,
       listener: bannerAdListener(
@@ -23,11 +24,11 @@ class AdModel {
     )..load();
   }
 
-  BannerAdListener bannerAdListener({Function onAdLoaded}) {
+  BannerAdListener bannerAdListener({required Function onAdLoaded}) {
     return BannerAdListener(
       onAdLoaded: (ad) {
         debugPrint('AdModService: $ad onAdLoaded.');
-        onAdLoaded?.call();
+        onAdLoaded.call();
       },
       onAdFailedToLoad: (ad, err) {
         debugPrint('AdModService: $ad onAdFailedToLoad.');

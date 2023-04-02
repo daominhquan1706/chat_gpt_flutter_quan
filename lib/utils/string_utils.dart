@@ -1,7 +1,7 @@
 import 'dart:math';
 
 class StringUtils {
-    static String randomString(int length) {
+  static String randomString(int length) {
     const String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
     Random rng = Random();
 

@@ -70,7 +70,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '207692103631',
     projectId: 'chattygpt-b93c7',
     storageBucket: 'chattygpt-b93c7.appspot.com',
-    iosClientId: '207692103631-v5ok0629pkrtjkc87qqb16885uakqb9m.apps.googleusercontent.com',
+    iosClientId:
+        '207692103631-v5ok0629pkrtjkc87qqb16885uakqb9m.apps.googleusercontent.com',
     iosBundleId: 'com.quan.chatty',
   );
 }

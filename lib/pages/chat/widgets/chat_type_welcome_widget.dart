@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChatTypeWelComeWidget extends StatelessWidget {
-  const ChatTypeWelComeWidget({Key key, this.onTapOption}) : super(key: key);
+  const ChatTypeWelComeWidget({
+    Key? key,
+    required this.onTapOption,
+  }) : super(key: key);
   TextStyle get textStyle => AppConstant.textStyle;
 
   final Function(String) onTapOption;

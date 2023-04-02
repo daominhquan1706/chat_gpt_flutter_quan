@@ -12,11 +12,12 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatPage extends GetResponsiveView<ChatPageController> {
-  ChatPage({Key key}) : super(key: key);
+  ChatPage({Key? key}) : super(key: key);
   TextStyle get textStyle => AppConstant.textStyle;
 
   @override
-  ChatPageController get controller => Get.put(ChatPageController(), tag: Get.parameters['roomId']);
+  ChatPageController get controller =>
+      Get.put(ChatPageController(), tag: Get.parameters['roomId']);
 
   @override
   Widget phone() {
@@ -172,12 +173,12 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
             controller.handleSendPressed(types.PartialText(text: message));
           },
         ),
-        customMessageBuilder: (p0, {messageWidth}) {
-          final ChatType type = p0.metadata['type'];
+        customMessageBuilder: (p0, {required messageWidth}) {
+          final ChatType type = p0.metadata!['type'];
           switch (type) {
             case ChatType.advertisement:
               return Obx(() {
-                final AdModel advertisement = p0.metadata['advertisement'];
+                final AdModel advertisement = p0.metadata!['advertisement'];
                 if (advertisement.isReady.value) {
                   return AdvertiseWidget(
                     ad: advertisement,
@@ -187,7 +188,7 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
               });
             case ChatType.errorMessage:
               return SelectableText(
-                p0.metadata['error'].toString(),
+                p0.metadata!['error'].toString(),
                 style: textStyle.copyWith(color: Colors.red),
               ).paddingSymmetric(horizontal: 16, vertical: 14);
             case ChatType.loading:
@@ -204,7 +205,8 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
                       controller.handleCancelPressed(p0.id);
                     },
                     // change to red
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     child: const Text('Stop'),
                   ).paddingAll(16),
                 ],
@@ -215,7 +217,6 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
                   controller.handleSendPressed(types.PartialText(text: text));
                 },
               );
-              break;
             default:
               break;
           }
@@ -224,9 +225,11 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
             return ChatGptContainerWidget(p0);
           }
           return SelectableText(
-            p0.metadata['text'].toString(),
+            p0.metadata!['text'].toString(),
             style: textStyle.copyWith(
-              color: isChatGPT ? AppColor.chatGptTextColor : AppColor.userChatTextColor,
+              color: isChatGPT
+                  ? AppColor.chatGptTextColor
+                  : AppColor.userChatTextColor,
             ),
           ).paddingSymmetric(horizontal: 16, vertical: 14);
         },
@@ -236,13 +239,17 @@ class ChatPage extends GetResponsiveView<ChatPageController> {
 
   Widget _bubbleBuilder(
     Widget child, {
-    @required types.Message message,
-    @required bool nextMessageInGroup,
+    required types.Message message,
+    required bool nextMessageInGroup,
   }) {
     return BubbleChatToolWidget(
       onCopyPressed: () {
-        if (Get.isRegistered<ChatGptContainerWidgetController>(tag: message.id)) {
-          final text = Get.find<ChatGptContainerWidgetController>(tag: message.id).message.value;
+        if (Get.isRegistered<ChatGptContainerWidgetController>(
+            tag: message.id)) {
+          final text =
+              Get.find<ChatGptContainerWidgetController>(tag: message.id)
+                  .message
+                  .value;
           AppFunctions.copyTextToClipboard(text);
         }
       },

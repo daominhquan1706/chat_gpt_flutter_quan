@@ -1,21 +1,21 @@
 enum Flavor {
-  PROD,
+  prod,
 }
 
 class F {
-  static Flavor appFlavor;
+  static late Flavor appFlavor;
 
-  static String get name => appFlavor?.name ?? '';
+  static String get name => appFlavor.name;
 
   static String get title {
     switch (appFlavor) {
-      case Flavor.PROD:
+      case Flavor.prod:
         return 'Chatty GPT';
       default:
         return 'title';
     }
   }
 
-  static String apiTokenChatGPT;
-  static String bannerAdUnitBottomBanner;
+  static late String apiTokenChatGPT;
+  static late String bannerAdUnitBottomBanner;
 }

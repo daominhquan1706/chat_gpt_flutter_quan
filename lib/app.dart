@@ -6,13 +6,17 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Chatty GPT',
-      theme: ThemeData(primarySwatch: Colors.blue, textTheme: GoogleFonts.robotoTextTheme()),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.robotoTextTheme(),
+        useMaterial3: true,
+      ),
       getPages: AppPages.pages,
       initialRoute: Routes.SPLASH,
       initialBinding: AppBindings(),

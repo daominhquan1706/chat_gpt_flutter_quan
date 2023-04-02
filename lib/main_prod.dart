@@ -8,7 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 Future<void> main() async {
-  F.appFlavor = Flavor.PROD;
+  F.appFlavor = Flavor.prod;
   WidgetsFlutterBinding.ensureInitialized();
 
   await Future.wait([

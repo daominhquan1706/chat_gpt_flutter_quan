@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BubbleChatToolWidget extends StatelessWidget {
-  const BubbleChatToolWidget({Key key, this.child, this.onCopyPressed}) : super(key: key);
+  BubbleChatToolWidget({
+    Key? key,
+    this.onCopyPressed,
+    required this.child,
+  }) : super(key: key);
   final Widget child;
 
-  final Function onCopyPressed;
-  
+  Function? onCopyPressed;
 
   List<ToolActionModel> get actions => [
         ToolActionModel(
@@ -47,7 +50,8 @@ class BubbleChatToolWidget extends StatelessWidget {
 }
 
 class AlertBubbleChatTool extends StatelessWidget {
-  AlertBubbleChatTool({Key key, this.child, this.actions}) : super(key: key);
+  AlertBubbleChatTool({Key? key, required this.child, required this.actions})
+      : super(key: key);
   final Widget child;
   final List<ToolActionModel> actions;
   final ScrollController scrollController = ScrollController(
@@ -86,8 +90,10 @@ class AlertBubbleChatTool extends StatelessWidget {
                   ),
                   child: Column(
                     children: actions
-                        .map((e) =>
-                            _buildButton(text: e.title, onPressed: e.onPressed, icon: e.icon))
+                        .map((e) => _buildButton(
+                            text: e.title,
+                            onPressed: e.onPressed,
+                            icon: e.icon))
                         .toList(),
                   ),
                 ),
@@ -99,7 +105,8 @@ class AlertBubbleChatTool extends StatelessWidget {
     );
   }
 
-  Widget _buildButton({String text, Function onPressed, IconData icon}) {
+  Widget _buildButton(
+      {required String text, Function()? onPressed, required IconData icon}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -127,7 +134,11 @@ class AlertBubbleChatTool extends StatelessWidget {
 class ToolActionModel {
   final String title;
   final IconData icon;
-  final Function onPressed;
+  final Function()? onPressed;
 
-  ToolActionModel({this.title, this.icon, this.onPressed});
+  ToolActionModel({
+    required this.title,
+    required this.icon,
+    this.onPressed,
+  });
 }

@@ -8,11 +8,11 @@ class AdModService extends GetxService {
   static final isReady = false.obs;
   static int totalTokens = 0;
 
-  AdModel bottomAd;
+  late AdModel bottomAd;
 
   List<AdModel> adsChat = [];
 
-  static String get bannerAdUnitId {
+  static String? get bannerAdUnitId {
     if (!kIsWeb) {
       return F.bannerAdUnitBottomBanner;
     }
@@ -44,9 +44,9 @@ class AdModService extends GetxService {
   }
 
   void dispose() {
-    bottomAd?.bannerAd?.dispose();
+    bottomAd.bannerAd.dispose();
     for (var ad in adsChat) {
-      ad?.bannerAd?.dispose();
+      ad.bannerAd.dispose();
     }
   }
 }

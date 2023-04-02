@@ -24,15 +24,17 @@ abstract class AppPages {
       transition: Transition.fadeIn,
       page: () => ChatPage(),
       bindings: [
-        BindingsBuilder(() => Get.put<ChatPageController>(ChatPageController())),
+        BindingsBuilder(
+            () => Get.put<ChatPageController>(ChatPageController())),
       ],
     ),
     GetPage(
       name: Routes.ROOM,
       transition: Transition.fadeIn,
-      page: () => const RoomPage(),
+      page: () => RoomPage(),
       bindings: [
-        BindingsBuilder(() => Get.put<RoomPageController>(RoomPageController())),
+        BindingsBuilder(
+            () => Get.put<RoomPageController>(RoomPageController())),
       ],
     ),
   ];

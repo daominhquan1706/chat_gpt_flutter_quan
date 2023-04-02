@@ -11,12 +11,8 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
 
 class RoomPage extends GetView<RoomPageController> {
-  final String partnerFullname;
-  final String partnerId;
   const RoomPage({
-    Key key,
-    this.partnerFullname,
-    this.partnerId,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -65,7 +61,8 @@ class RoomPage extends GetView<RoomPageController> {
           children: [
             ListTile(
               title: Text(
-                toTimeAgo(DateTime.fromMicrosecondsSinceEpoch(room.createdAt * 1000)),
+                toTimeAgo(DateTime.fromMicrosecondsSinceEpoch(
+                    room.createdAt! * 1000)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -97,9 +94,11 @@ class RoomPage extends GetView<RoomPageController> {
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                _buildChatMessage(messages[messages.length - 2]),
+                                _buildChatMessage(
+                                    messages[messages.length - 2]),
                                 16.verticalSpace,
-                                _buildChatMessage(messages[messages.length - 1]),
+                                _buildChatMessage(
+                                    messages[messages.length - 1]),
                               ],
                             ).paddingAll(16),
                           ),
@@ -164,16 +163,19 @@ class RoomPage extends GetView<RoomPageController> {
   }
 
   _buildChatMessage(types.Message message) {
-    final isChatGPT = message.author.id == Get.find<AppController>().chatGptUser.id;
+    final isChatGPT =
+        message.author.id == Get.find<AppController>().chatGptUser.id;
     return Align(
       alignment: isChatGPT ? Alignment.centerLeft : Alignment.centerRight,
       child: ChatBubbleWidget(
         message: message,
         nextMessageInGroup: false,
         child: Text(
-          message.metadata['text'].toString(),
-          style: AppConstant.textStyle
-              .copyWith(color: isChatGPT ? AppColor.chatGptTextColor : AppColor.userChatTextColor),
+          message.metadata!['text'].toString(),
+          style: AppConstant.textStyle.copyWith(
+              color: isChatGPT
+                  ? AppColor.chatGptTextColor
+                  : AppColor.userChatTextColor),
         ).paddingSymmetric(horizontal: 16, vertical: 14),
       ),
     );

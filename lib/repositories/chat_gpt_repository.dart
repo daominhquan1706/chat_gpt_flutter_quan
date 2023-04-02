@@ -12,8 +12,10 @@ class ChatGPTRepository {
   static Dio dio = Dio();
 
   // make stream request call to chatgpt api
-  static Future<Stream<String>> makeRequest(List<Map<String, String>> messages,
-      {String idLoading}) async {
+  static Future<Stream<String>?> makeRequest(
+    List<Map<String, String>> messages, {
+    required String idLoading,
+  }) async {
     var rs = await Dio().post<ResponseBody>(
       apiUrl,
       options: Options(headers: {
@@ -22,19 +24,22 @@ class ChatGPTRepository {
       }, responseType: ResponseType.stream), // set responseType to `stream`
       data: {
         "model": "gpt-3.5-turbo",
-        "messages": messages.length > 3 ? messages.sublist(messages.length - 3) : messages,
+        "messages": messages.length > 3
+            ? messages.sublist(messages.length - 3)
+            : messages,
         // "max_tokens": 1000,
         "stream": true,
       },
       cancelToken: Get.put<CancelToken>(CancelToken(), tag: idLoading),
     );
-    StreamTransformer<Uint8List, List<int>> unit8Transformer = StreamTransformer.fromHandlers(
+    StreamTransformer<Uint8List, List<int>> unit8Transformer =
+        StreamTransformer.fromHandlers(
       handleData: (data, sink) {
         sink.add(List<int>.from(data));
       },
     );
 
-    return rs.data.stream
+    return rs.data?.stream
         .transform(unit8Transformer)
         .transform(const Utf8Decoder())
         .transform(const LineSplitter())

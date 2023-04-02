@@ -25,7 +25,6 @@ class ChatPageController extends GetxController {
   final isLoading = false.obs;
   final RxList<types.Message> messages = RxList<types.Message>([]);
 
-  ChatPageController();
   AutoScrollController get scrollController =>
       Get.put<AutoScrollController>(AutoScrollController());
   List<Map<String, String>> contextMessages = [];
@@ -33,10 +32,10 @@ class ChatPageController extends GetxController {
   types.User get chatGptUser => Get.find<AppController>().chatGptUser;
   types.User get user => Get.find<AppController>().user;
 
-  String get roomId => Get.parameters['id'];
-  types.Room room;
+  String? get roomId => Get.parameters['id'];
+  late types.Room room;
 
-  AdModel bottomAd;
+  late AdModel bottomAd;
   int totalTokens = 0;
   // String idLoading;
   final TextEditingController messageController = TextEditingController();
@@ -47,9 +46,12 @@ class ChatPageController extends GetxController {
   @override
   void onInit() {
     initMessage();
-    RoomChatService.getRoom(roomId).then((value) {
-      room = value;
-    });
+    if (roomId != null) {
+      RoomChatService.getRoom(roomId!).then((value) {
+        room = value;
+      });
+    }
+
     if (!kIsWeb) {
       _loadBottomAd();
     }
@@ -70,8 +72,8 @@ class ChatPageController extends GetxController {
 
     messages.insertAll(
       0,
-      (await MessageChatService.getMessages(roomId))
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+      roomId == null ? [] : (await MessageChatService.getMessages(roomId!))
+        ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!)),
     );
   }
 
@@ -163,7 +165,8 @@ class ChatPageController extends GetxController {
         });
 
     messages.insert(0, textMessage);
-    MessageChatService.createMessage(roomId, textMessage);
+
+    MessageChatService.createMessage(roomId!, textMessage);
 
     _chat(message.text);
     scrollController.scrollToIndex(0);
@@ -201,7 +204,7 @@ class ChatPageController extends GetxController {
       textCancel: 'No',
       onConfirm: () {
         Get.back();
-        MessageChatService.deleteAllMessages(roomId);
+        MessageChatService.deleteAllMessages(roomId!);
         messages.clear();
         totalTokens = 0;
         initMessage();

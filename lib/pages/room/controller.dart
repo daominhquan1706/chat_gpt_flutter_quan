@@ -68,6 +68,6 @@ class RoomPageController extends GetxController {
 
   Future<void> fetchRooms() async {
     rooms.value = (await RoomChatService.getRooms())
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
   }
 }

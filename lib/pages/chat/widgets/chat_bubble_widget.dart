@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 
 class ChatBubbleWidget extends StatelessWidget {
   const ChatBubbleWidget({
-    Key key,
-    @required this.child,
-    @required this.message,
+    Key? key,
+    required this.child,
+    required this.message,
     this.nextMessageInGroup = false,
   }) : super(key: key);
 
