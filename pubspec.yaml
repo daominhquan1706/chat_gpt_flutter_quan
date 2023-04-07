@@ -33,6 +33,7 @@ dependencies:
   intl: ^0.17.0
   loading_animation_widget: ^1.2.0+4
   url_launcher: ^6.1.10
+  flutter_app_version_checker: ^0.3.2
   
 
 dev_dependencies:
