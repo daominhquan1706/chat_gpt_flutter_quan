@@ -6,7 +6,7 @@ publish_to: "none"
 version: 1.0.4+4
 
 environment:
-  sdk: '>=2.19.0 <3.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -22,25 +22,25 @@ dependencies:
       ref: main
 
   google_fonts: ^4.0.3
-  google_mobile_ads: ^2.3.0
+  google_mobile_ads: ^4.0.0
   firebase_remote_config: ^4.0.0
   firebase_core: ^2.8.0
   markdown_widget: ^2.0.0+1
   dio: ^5.0.3
-  flutter_client_sse: ^1.0.0
+  flutter_client_sse: ^2.0.0
   get_storage: ^2.1.1
   flutter_easyloading: ^3.0.5
   intl: ^0.17.0
   loading_animation_widget: ^1.2.0+4
   url_launcher: ^6.1.10
-  flutter_app_version_checker: ^0.3.2
+  # flutter_app_version_checker: ^0.3.2
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_flavorizr: ^2.1.4
-  flutter_lints: ^2.0.0
+  flutter_flavorizr: ^2.2.1
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
@@ -53,7 +53,6 @@ flavorizr:
   app:
     android:
       flavorDimensions: "app"
-    ios:
 
   flavors:
     prod:
