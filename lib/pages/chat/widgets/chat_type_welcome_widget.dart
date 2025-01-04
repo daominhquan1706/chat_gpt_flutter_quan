@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 
 class ChatTypeWelComeWidget extends StatelessWidget {
   const ChatTypeWelComeWidget({
-    Key? key,
+    super.key,
     required this.onTapOption,
-  }) : super(key: key);
+  });
   TextStyle get textStyle => AppConstant.textStyle;
 
   final Function(String) onTapOption;

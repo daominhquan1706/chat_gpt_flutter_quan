@@ -18,4 +18,5 @@ class F {
 
   static String? apiTokenChatGPT;
   static String? bannerAdUnitBottomBanner;
+  static String? apiTokenGemini;
 }

@@ -58,5 +58,6 @@ class AppController extends GetxService {
     await remoteConfig.fetchAndActivate();
     F.apiTokenChatGPT = remoteConfig.getString('API_TOKEN_CHATGPT');
     F.bannerAdUnitBottomBanner = remoteConfig.getString('BANNER_AD_UNIT_ID_BOTTOM_BANNER');
+    F.apiTokenGemini = remoteConfig.getString('GEMINI_API_KEY');
   }
 }

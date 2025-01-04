@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:google_generative_ai/src/api.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 enum ChatType {
@@ -112,58 +113,74 @@ class ChatPageController extends GetxController {
     )..generateAd();
   }
 
-  void _chat(String input, {required types.CustomMessage userMessage}) async {
+  Future<void> _chat(String input, {required types.CustomMessage userMessage}) async {
     final idLoading = StringUtils.randomString(10);
+    final indexLoading = 0; // Messages are always inserted at index 0
+
     try {
       calculateAddAdvertisement();
       showChatLoading(idLoading);
 
-      var result = await ChatGPTRepository.generateChat(
-        [
-          ...contextMessages,
-        ],
+      final Stream<GenerateContentResponse>? result = await ChatGPTRepository.generateChat(
+        [...contextMessages],
         idLoading: idLoading,
       );
 
-      final indexLoading = messages.indexWhere((element) => element.id == idLoading);
-      messages.removeAt(indexLoading);
-      if (result == null) {
-        return; // is Ok
-      }
-
-      final textMessage = types.CustomMessage(
-        author: chatGptUser,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: StringUtils.randomString(10),
-        metadata: {
-          'type': ChatType.normalMessage.name,
-          'stream': result,
-          'roomId': roomId,
-          'userMessageId': userMessage.id,
-        },
-      );
-      insertMessages(indexLoading, textMessage);
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.cancel) {
-        print('Request was canceled');
-      }
-    } catch (e) {
-      final textMessage = types.CustomMessage(
-        author: chatGptUser,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        id: StringUtils.randomString(10),
-        metadata: {
-          'type': ChatType.errorMessage.name,
-          'error': kDebugMode ? e.toString() : 'Something went wrong',
-        },
-      );
-
-      final index = messages.indexWhere((element) => element.id == idLoading);
-      messages.removeAt(index);
-      insertMessages(index, textMessage);
-    } finally {
-      isLoading.value = false;
       messages.removeWhere((element) => element.id == idLoading);
+      isLoading.value = false;
+
+      if (result == null) {
+        insertMessages(
+          indexLoading,
+          types.CustomMessage(
+            author: chatGptUser,
+            createdAt: DateTime.now().millisecondsSinceEpoch,
+            id: StringUtils.randomString(10),
+            metadata: {
+              'type': ChatType.errorMessage.name,
+              'error': 'No response received',
+            },
+          ),
+        );
+        return;
+      }
+
+      insertMessages(
+        indexLoading,
+        types.CustomMessage(
+          author: chatGptUser,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          id: StringUtils.randomString(10),
+          metadata: {
+            'type': ChatType.normalMessage.name,
+            'stream': result,
+            'roomId': roomId,
+            'userMessageId': userMessage.id,
+          },
+        ),
+      );
+    } catch (e) {
+      messages.removeWhere((element) => element.id == idLoading);
+      isLoading.value = false;
+
+      final error = kDebugMode == true
+          ? e is DioException
+              ? e.message
+              : e.toString()
+          : 'Something went wrong';
+
+      insertMessages(
+        indexLoading,
+        types.CustomMessage(
+          author: chatGptUser,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          id: StringUtils.randomString(10),
+          metadata: {
+            'type': ChatType.errorMessage.name,
+            'error': error,
+          },
+        ),
+      );
     }
   }
 

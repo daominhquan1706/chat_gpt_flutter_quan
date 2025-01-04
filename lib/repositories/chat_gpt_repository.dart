@@ -5,6 +5,7 @@ import 'package:chat_gpt_flutter_quan/flavors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
 
 class ChatGPTRepository {
@@ -12,64 +13,57 @@ class ChatGPTRepository {
   static const String apiTextCompelteUrl = 'https://api.openai.com/v1/completions';
   static String? get token => F.apiTokenChatGPT;
   static Dio dio = Dio();
+  static GenerativeModel? _model;
+  static GenerativeModel get model {
+    _model ??= GenerativeModel(
+      model: 'gemini-1.5-flash-latest',
+      apiKey: F.apiTokenGemini!,
+    );
+    return _model!;
+  }
+
+  static int maxContextMessage = 5;
 
   // make stream request call to chatgpt api
-  static Future<Stream<String>?> generateChat(
+  static Future<Stream<GenerateContentResponse>?> generateChat(
     List<Map<String, String>> messages, {
     required String idLoading,
   }) async {
-    final contextMessages = messages.length > 5 ? messages.sublist(messages.length - 5) : messages;
-    var rs = await Dio().post<ResponseBody>(
-      apiChatUrl,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        responseType: ResponseType.stream,
-      ),
-      data: {
-        'model': 'gpt-3.5-turbo',
-        'messages': contextMessages,
-        // "max_tokens": 1000,
-        'stream': true,
-      },
-      cancelToken: Get.put<CancelToken>(CancelToken(), tag: idLoading),
-    );
-    StreamTransformer<Uint8List, List<int>> unit8Transformer = StreamTransformer.fromHandlers(
-      handleData: (data, sink) {
-        sink.add(List<int>.from(data));
-      },
-    );
+    final contextCount =
+        messages.length > maxContextMessage ? messages.length - maxContextMessage : 0;
+    final contextMessages = messages.sublist(contextCount);
 
-    return rs.data?.stream
-        .transform(unit8Transformer)
-        .transform(const Utf8Decoder())
-        .transform(const LineSplitter())
-        .asBroadcastStream();
+    // Convert messages to Content format for Gemini
+    final content = contextMessages.map((msg) => Content.text(msg['content'] ?? '')).toList();
+
+    try {
+      final Stream<GenerateContentResponse> contentStream = model.generateContentStream(content);
+
+      // Convert the response stream to String stream
+      return contentStream;
+    } catch (e) {
+      Get.log('Error generating chat: $e');
+      return null;
+    }
   }
 
   // make stream request call to chatgpt api
   static Future<String?> generateTextCompletion(
     String prompt,
   ) async {
-    http.Response response = await http.post(
-      Uri.parse(apiTextCompelteUrl),
-      body: jsonEncode({
-        'model': 'text-davinci-003',
-        'prompt': prompt,
-        'max_tokens': 1000,
-      }),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    );
+    try {
+      final content = Content.text(prompt);
+      final response = await model.generateContent([content]);
+      final text = response.text;
 
-    if (response.statusCode == 200) {
-      Get.log(response.body);
-      return correctUtf8(jsonDecode(response.body)['choices'][0]['text']);
-    } else {
+      if (text != null) {
+        Get.log(text);
+        return text;
+      } else {
+        return '';
+      }
+    } catch (e) {
+      Get.log('Error generating text completion: $e');
       return '';
     }
   }
