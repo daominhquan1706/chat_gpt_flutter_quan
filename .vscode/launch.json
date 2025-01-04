@@ -13,7 +13,7 @@
                 "5129",
                 "--flavor",
                 "prod",
-                "--verbose",
+                // "--verbose",
             ],
         }
     ]
